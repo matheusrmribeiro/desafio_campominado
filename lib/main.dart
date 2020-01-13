@@ -1,13 +1,7 @@
-import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'redux/appState.dart';
 import 'views/home.dart';
 
-Store<AppState> store;
-
 void main() {
-  var state = AppState.initialState();
-  store = Store<AppState>(initialState: state);
   runApp(MyApp());
 }
 
@@ -21,14 +15,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreProvider<AppState>(
-      store: store,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: "Campo minado",
-        home: Home(),
-        theme: theme,
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Campo minado",
+      home: Home(),
+      theme: theme,
     );
   }
 }
