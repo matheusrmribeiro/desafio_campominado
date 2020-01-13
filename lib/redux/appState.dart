@@ -1,19 +1,17 @@
-import 'package:desafio_campominado/views/minefield.dart';
+import 'package:desafio_campominado/model/minefield.dart';
 
 class AppState{
-  AppState({this.minefield, this.totalMines, this.gameOver});
+  AppState({this.minefield, this.gameOver});
 
   final MineField minefield;
-  final int totalMines;
   final bool gameOver;
 
   AppState copy({MineField minefield, int totalMines, bool gameOver}) => AppState(
         minefield: minefield ?? this.minefield,
-        totalMines: totalMines ?? this.totalMines,
         gameOver: gameOver ?? this.gameOver
       );
 
-  static AppState initialState() => AppState(minefield: null, totalMines: 0, gameOver: false);
+  static AppState initialState() => AppState(minefield: null, gameOver: false);
 
   @override
   bool operator ==(Object other) =>
@@ -21,9 +19,8 @@ class AppState{
       other is AppState &&
           runtimeType == other.runtimeType &&
           minefield == other.minefield &&
-          totalMines == other.totalMines &&
           gameOver == other.gameOver;
 
   @override
-  int get hashCode => minefield.hashCode ^ totalMines.hashCode ^ gameOver.hashCode;
+  int get hashCode => minefield.hashCode ^ gameOver.hashCode;
 }

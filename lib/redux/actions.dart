@@ -9,5 +9,15 @@ class ClickAction extends ReduxAction<AppState> {
   ClickAction({@required this.field}) : assert(field != null);
 
   @override
-  AppState reduce() => state.copy(minefield: state.minefield);
+  AppState reduce(){
+    final fields = state.minefield.fields;
+    int index = fields.indexOf(field);
+    
+    if (!field.hasMine){
+      fields[index].isCovered = false;
+
+    }
+
+    return state.copy(minefield: state.minefield, gameOver: field.hasMine);
+  }
 }

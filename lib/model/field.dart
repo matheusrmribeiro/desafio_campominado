@@ -8,11 +8,11 @@ class Field{
     this.hasFlag = false, 
     this.minesAround = 0});
   
-  final bool hasMine;
-  final bool hasFlag;
-  final bool isCovered;
   final int posX;
   final int posY;
+  bool hasMine;
+  bool hasFlag;
+  bool isCovered;
   int minesAround;
 }
 
