@@ -50,15 +50,13 @@ abstract class _MineFieldController with Store {
       return;
     }
 
-    field.minesAround = 0;
-
     uncoverAdjacentFields(field: field, 
       visited: {[field.posX, field.posY].toString(): false}, 
       clicked: true);
   }
 
   @action
-  void onLongPress(FieldController field) => field.hasFlag=true;
+  void onLongPress(FieldController field) => field.hasFlag=!field.hasFlag;
 
   ObservableList<FieldController> buildFields(){
     final dimension = _getDimension();
@@ -86,6 +84,9 @@ abstract class _MineFieldController with Store {
 
     return fields;
   }  
+
+  @computed
+  get flaggedMines => fields.where((item) => item.hasFlag).length;
 
   List<int> _getDimension(){
     switch (difficulty) {
@@ -150,6 +151,8 @@ abstract class _MineFieldController with Store {
 
       if (clicked)
         field.isCovered = false;
+      else if (field.hasFlag)
+        return;
       else if (field.minesAround == 0)
         field.isCovered = false;
       else if (field.minesAround > 0){

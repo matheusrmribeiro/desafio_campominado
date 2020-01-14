@@ -19,7 +19,7 @@ class MineField extends StatelessWidget {
           children: <Widget>[
             // TODO - Score, time, restart
             Container(
-
+              child: Scoreboard(minefield: minefield),
             ),
 
             // Field 10x15
@@ -65,20 +65,92 @@ class FieldWidget extends StatelessWidget {
         return GestureDetector(
           onTap: onTap,
           onLongPress: onLongPress,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              color: item.color,
-            ),
-            child: Center(
-              child: Container(
-                  padding: EdgeInsets.all(0),
-                  child: item.icon,
+          child: Card(
+            margin: EdgeInsets.all(0),
+            color: item.color,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: item.borderColor),
+                color: item.color,
+                  borderRadius: BorderRadius.all(const Radius.circular(5),
+                )
+              ),
+              child: Center(
+                child: Container(
+                    padding: EdgeInsets.all(0),
+                    child: item.icon,
+                ),
               ),
             ),
           ),
         );
       }
+    );
+  }
+}
+
+class Scoreboard extends StatelessWidget {
+
+  const Scoreboard({Key key, this.minefield}) : super(key: key);
+
+  final MineFieldController minefield;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.only(left: 10, right: 10),
+        height: 200,
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Text("Minas marcadas",
+                      style: TextStyle(
+                        color: Colors.deepOrange,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Observer(
+                      builder: (_) {
+                        return Text(minefield.flaggedMines.toString(),
+                          style: TextStyle(
+                            color: Colors.deepOrange,
+                            fontSize: 18,
+                          )
+                        );
+                      }
+                    )
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Text("Total minas",
+                      style: TextStyle(
+                        color: Colors.deepOrange,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Observer(
+                      builder: (_) {
+                        return Text(minefield.totalMines.toString(),
+                          style: TextStyle(
+                            color: Colors.deepOrange,
+                            fontSize: 18,
+                          )
+                        );
+                      }
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+      ),
     );
   }
 }

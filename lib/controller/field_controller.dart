@@ -40,7 +40,7 @@ abstract class _FieldController with Store {
   } 
 
   @computed
-  Color get color{
+  get color{
     if (isCovered) 
       return Colors.grey;
 
@@ -51,13 +51,25 @@ abstract class _FieldController with Store {
   }
 
   @computed
-  Color get hintColor{
+  get hintColor{
     switch (minesAround) {
+      case 0 : return Colors.transparent;
       case 1 : return Colors.blue;
       case 2 : return Colors.green;
       case 3 : return Colors.orange;
       default: return Colors.red;
     }
+  }
+
+  @computed
+  get borderColor{
+    if (!isCovered)
+      return hintColor;
+    
+    if (hasFlag)
+      return Colors.red;
+
+    return Colors.grey;
   }
 
   @computed

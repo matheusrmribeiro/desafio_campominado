@@ -15,16 +15,22 @@ mixin _$FieldController on _FieldController, Store {
   String get minesAroundDescription => (_$minesAroundDescriptionComputed ??=
           Computed<String>(() => super.minesAroundDescription))
       .value;
-  Computed<Color> _$colorComputed;
+  Computed<dynamic> _$colorComputed;
 
   @override
-  Color get color =>
-      (_$colorComputed ??= Computed<Color>(() => super.color)).value;
-  Computed<Color> _$hintColorComputed;
+  dynamic get color =>
+      (_$colorComputed ??= Computed<dynamic>(() => super.color)).value;
+  Computed<dynamic> _$hintColorComputed;
 
   @override
-  Color get hintColor =>
-      (_$hintColorComputed ??= Computed<Color>(() => super.hintColor)).value;
+  dynamic get hintColor =>
+      (_$hintColorComputed ??= Computed<dynamic>(() => super.hintColor)).value;
+  Computed<dynamic> _$borderColorComputed;
+
+  @override
+  dynamic get borderColor =>
+      (_$borderColorComputed ??= Computed<dynamic>(() => super.borderColor))
+          .value;
   Computed<Widget> _$iconComputed;
 
   @override
