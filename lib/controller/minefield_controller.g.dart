@@ -12,14 +12,14 @@ mixin _$MineFieldController on _MineFieldController, Store {
   final _$fieldsAtom = Atom(name: '_MineFieldController.fields');
 
   @override
-  ObservableList<Field> get fields {
+  ObservableList<FieldController> get fields {
     _$fieldsAtom.context.enforceReadPolicy(_$fieldsAtom);
     _$fieldsAtom.reportObserved();
     return super.fields;
   }
 
   @override
-  set fields(ObservableList<Field> value) {
+  set fields(ObservableList<FieldController> value) {
     _$fieldsAtom.context.conditionallyRunInAction(() {
       super.fields = value;
       _$fieldsAtom.reportChanged();
@@ -47,21 +47,30 @@ mixin _$MineFieldController on _MineFieldController, Store {
       ActionController(name: '_MineFieldController');
 
   @override
-  void initializeGame({Difficulty difficulty, int totalMines}) {
+  void initializeGame() {
     final _$actionInfo = _$_MineFieldControllerActionController.startAction();
     try {
-      return super
-          .initializeGame(difficulty: difficulty, totalMines: totalMines);
+      return super.initializeGame();
     } finally {
       _$_MineFieldControllerActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void onClickItem(Field field) {
+  void onTap(FieldController field) {
     final _$actionInfo = _$_MineFieldControllerActionController.startAction();
     try {
-      return super.onClickItem(field);
+      return super.onTap(field);
+    } finally {
+      _$_MineFieldControllerActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void onLongPress(FieldController field) {
+    final _$actionInfo = _$_MineFieldControllerActionController.startAction();
+    try {
+      return super.onLongPress(field);
     } finally {
       _$_MineFieldControllerActionController.endAction(_$actionInfo);
     }

@@ -9,6 +9,28 @@ part of 'field_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$FieldController on _FieldController, Store {
+  Computed<String> _$minesAroundDescriptionComputed;
+
+  @override
+  String get minesAroundDescription => (_$minesAroundDescriptionComputed ??=
+          Computed<String>(() => super.minesAroundDescription))
+      .value;
+  Computed<Color> _$colorComputed;
+
+  @override
+  Color get color =>
+      (_$colorComputed ??= Computed<Color>(() => super.color)).value;
+  Computed<Color> _$hintColorComputed;
+
+  @override
+  Color get hintColor =>
+      (_$hintColorComputed ??= Computed<Color>(() => super.hintColor)).value;
+  Computed<Widget> _$iconComputed;
+
+  @override
+  Widget get icon =>
+      (_$iconComputed ??= Computed<Widget>(() => super.icon)).value;
+
   final _$hasMineAtom = Atom(name: '_FieldController.hasMine');
 
   @override
