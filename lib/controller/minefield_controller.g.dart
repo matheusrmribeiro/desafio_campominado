@@ -15,6 +15,11 @@ mixin _$MineFieldController on _MineFieldController, Store {
   dynamic get flaggedMines =>
       (_$flaggedMinesComputed ??= Computed<dynamic>(() => super.flaggedMines))
           .value;
+  Computed<bool> _$winnerComputed;
+
+  @override
+  bool get winner =>
+      (_$winnerComputed ??= Computed<bool>(() => super.winner)).value;
   Computed<String> _$timeComputed;
 
   @override
@@ -70,23 +75,6 @@ mixin _$MineFieldController on _MineFieldController, Store {
       super.initialized = value;
       _$initializedAtom.reportChanged();
     }, _$initializedAtom, name: '${_$initializedAtom.name}_set');
-  }
-
-  final _$winnerAtom = Atom(name: '_MineFieldController.winner');
-
-  @override
-  bool get winner {
-    _$winnerAtom.context.enforceReadPolicy(_$winnerAtom);
-    _$winnerAtom.reportObserved();
-    return super.winner;
-  }
-
-  @override
-  set winner(bool value) {
-    _$winnerAtom.context.conditionallyRunInAction(() {
-      super.winner = value;
-      _$winnerAtom.reportChanged();
-    }, _$winnerAtom, name: '${_$winnerAtom.name}_set');
   }
 
   final _$hourAtom = Atom(name: '_MineFieldController.hour');

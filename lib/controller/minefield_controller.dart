@@ -34,9 +34,6 @@ abstract class _MineFieldController with Store {
   bool initialized = false;
 
   @observable
-  bool winner = false;
-
-  @observable
   int hour = 0;
 
   @observable
@@ -55,7 +52,6 @@ abstract class _MineFieldController with Store {
   void restart(){
     gameOver = false;
     initialized = false;
-    winner = false;
     matrix = {};
     fields.clear();
     _timer = null;
@@ -69,7 +65,7 @@ abstract class _MineFieldController with Store {
     if (!initialized)
       initialized = true;
 
-    if ((gameOver) || (field.hasFlag))
+    if ((gameOver) || (winner) || (field.hasFlag))
       return;
     
     if (field.hasMine){
@@ -92,12 +88,36 @@ abstract class _MineFieldController with Store {
     if (!initialized)
       initialized = true;
 
+    if ((gameOver) || (winner) || (field.hasFlag))
+      return;
+
     if (field.isCovered)
       field.hasFlag=!field.hasFlag;
   }
 
   @computed
   get flaggedMines => totalMines - fields.where((item) => item.hasFlag).length;
+
+  @computed
+  bool get winner{
+    bool isWinner = true;
+    if (flaggedMines == 0){
+      fields.where((item) => item.hasFlag).forEach((item){
+        if (!item.hasMine){
+          isWinner = false;
+          return;
+        }
+          
+      });
+    }
+    else
+      isWinner = false;
+
+    if (fields.where((item) => item.isCovered).length > 0)
+      isWinner = false;
+
+    return isWinner;
+  }
 
   @computed
   String get time{
@@ -126,10 +146,12 @@ abstract class _MineFieldController with Store {
   ObservableList<FieldController> buildFields(){
     final dimension = _getDimension();
     final dimensionLength = dimension[0]*dimension[1];
-    final tryMine = Random();
+    
     int _line = 0;
     int _column = -1;
-    List<int> mines = List.generate(totalMines, (_) => tryMine.nextInt(dimensionLength));
+    List<int> mines = [];
+    
+    generateMines(mines, dimensionLength);
 
     fields = List.generate(dimensionLength, (index){
       if (_column >= dimension[0]-1){
@@ -149,6 +171,17 @@ abstract class _MineFieldController with Store {
 
     return fields;
   }  
+
+  void generateMines(List<int> mines, int dimensionLength){
+    if (mines.length < totalMines){
+      final tryMine = Random();
+      int mine = tryMine.nextInt(dimensionLength);
+
+      if (!mines.contains(mine))
+        mines.add(tryMine.nextInt(dimensionLength));
+      generateMines(mines, dimensionLength);
+    }
+  }
 
   List<int> _getDimension(){
     switch (difficulty) {

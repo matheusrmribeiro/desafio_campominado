@@ -60,7 +60,7 @@ class MineField extends StatelessWidget {
             Observer(
               builder: (_) {
                 return Visibility(
-                  visible: minefield.gameOver,
+                  visible: minefield.gameOver || minefield.winner,
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -103,6 +103,33 @@ class MineField extends StatelessWidget {
                 ),
               ),            
             ),
+            Align(
+              alignment: Alignment.center,
+              child: Observer(
+                builder: (_) {
+                  return Visibility(
+                    visible: minefield.winner,
+                    child: Container(
+                      height: 50,
+                      width: 250,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(120),
+                        border: Border.all(color: Colors.brown, width: 1.5),
+                        color: Colors.brown
+                      ),
+                      child: Center(
+                        child: Text("Você venceu!",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              ),
+            )
           ],
         ),
       ),
