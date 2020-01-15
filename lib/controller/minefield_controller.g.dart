@@ -15,6 +15,11 @@ mixin _$MineFieldController on _MineFieldController, Store {
   dynamic get flaggedMines =>
       (_$flaggedMinesComputed ??= Computed<dynamic>(() => super.flaggedMines))
           .value;
+  Computed<String> _$timeComputed;
+
+  @override
+  String get time =>
+      (_$timeComputed ??= Computed<String>(() => super.time)).value;
 
   final _$fieldsAtom = Atom(name: '_MineFieldController.fields');
 
@@ -50,6 +55,74 @@ mixin _$MineFieldController on _MineFieldController, Store {
     }, _$gameOverAtom, name: '${_$gameOverAtom.name}_set');
   }
 
+  final _$initializedAtom = Atom(name: '_MineFieldController.initialized');
+
+  @override
+  bool get initialized {
+    _$initializedAtom.context.enforceReadPolicy(_$initializedAtom);
+    _$initializedAtom.reportObserved();
+    return super.initialized;
+  }
+
+  @override
+  set initialized(bool value) {
+    _$initializedAtom.context.conditionallyRunInAction(() {
+      super.initialized = value;
+      _$initializedAtom.reportChanged();
+    }, _$initializedAtom, name: '${_$initializedAtom.name}_set');
+  }
+
+  final _$winnerAtom = Atom(name: '_MineFieldController.winner');
+
+  @override
+  bool get winner {
+    _$winnerAtom.context.enforceReadPolicy(_$winnerAtom);
+    _$winnerAtom.reportObserved();
+    return super.winner;
+  }
+
+  @override
+  set winner(bool value) {
+    _$winnerAtom.context.conditionallyRunInAction(() {
+      super.winner = value;
+      _$winnerAtom.reportChanged();
+    }, _$winnerAtom, name: '${_$winnerAtom.name}_set');
+  }
+
+  final _$hourAtom = Atom(name: '_MineFieldController.hour');
+
+  @override
+  int get hour {
+    _$hourAtom.context.enforceReadPolicy(_$hourAtom);
+    _$hourAtom.reportObserved();
+    return super.hour;
+  }
+
+  @override
+  set hour(int value) {
+    _$hourAtom.context.conditionallyRunInAction(() {
+      super.hour = value;
+      _$hourAtom.reportChanged();
+    }, _$hourAtom, name: '${_$hourAtom.name}_set');
+  }
+
+  final _$minuteAtom = Atom(name: '_MineFieldController.minute');
+
+  @override
+  int get minute {
+    _$minuteAtom.context.enforceReadPolicy(_$minuteAtom);
+    _$minuteAtom.reportObserved();
+    return super.minute;
+  }
+
+  @override
+  set minute(int value) {
+    _$minuteAtom.context.conditionallyRunInAction(() {
+      super.minute = value;
+      _$minuteAtom.reportChanged();
+    }, _$minuteAtom, name: '${_$minuteAtom.name}_set');
+  }
+
   final _$_MineFieldControllerActionController =
       ActionController(name: '_MineFieldController');
 
@@ -58,6 +131,16 @@ mixin _$MineFieldController on _MineFieldController, Store {
     final _$actionInfo = _$_MineFieldControllerActionController.startAction();
     try {
       return super.initializeGame();
+    } finally {
+      _$_MineFieldControllerActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void restart() {
+    final _$actionInfo = _$_MineFieldControllerActionController.startAction();
+    try {
+      return super.restart();
     } finally {
       _$_MineFieldControllerActionController.endAction(_$actionInfo);
     }

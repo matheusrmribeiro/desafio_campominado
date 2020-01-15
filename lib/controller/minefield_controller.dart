@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:math';
+import 'package:intl/intl.dart';
 
 import 'package:desafio_campominado/controller/field_controller.dart';
 import 'package:flutter/foundation.dart';
@@ -28,6 +30,20 @@ abstract class _MineFieldController with Store {
   @observable
   bool gameOver = false;
 
+  @observable
+  bool initialized = false;
+
+  @observable
+  bool winner = false;
+
+  @observable
+  int hour = 0;
+
+  @observable
+  int minute = 0;
+
+  Timer _timer;
+
   Map<String, FieldController> matrix = {};
 
   @action
@@ -36,7 +52,23 @@ abstract class _MineFieldController with Store {
   }
 
   @action
+  void restart(){
+    gameOver = false;
+    initialized = false;
+    winner = false;
+    matrix = {};
+    fields.clear();
+    _timer = null;
+    minute = 0;
+    hour = 0;
+    initializeGame();
+  }
+
+  @action
   void onTap(FieldController field){
+    if (!initialized)
+      initialized = true;
+
     if ((gameOver) || (field.hasFlag))
       return;
     
@@ -56,7 +88,40 @@ abstract class _MineFieldController with Store {
   }
 
   @action
-  void onLongPress(FieldController field) => field.hasFlag=!field.hasFlag;
+  void onLongPress(FieldController field){
+    if (!initialized)
+      initialized = true;
+
+    if (field.isCovered)
+      field.hasFlag=!field.hasFlag;
+  }
+
+  @computed
+  get flaggedMines => totalMines - fields.where((item) => item.hasFlag).length;
+
+  @computed
+  String get time{
+    if ((initialized) && (_timer == null)){
+      final oneSec = const Duration(seconds: 1);
+      _timer = Timer.periodic(oneSec,
+        (Timer timer) {
+          if (minute == 59){
+            minute = 0;
+            hour++;
+          }
+            
+          minute++;    
+        }
+      );
+    }
+
+    if ((gameOver) || (winner))
+      _timer.cancel();
+
+    NumberFormat formatter = NumberFormat("00"); 
+
+    return "${formatter.format(hour)}:${formatter.format(minute)}";
+  }
 
   ObservableList<FieldController> buildFields(){
     final dimension = _getDimension();
@@ -84,9 +149,6 @@ abstract class _MineFieldController with Store {
 
     return fields;
   }  
-
-  @computed
-  get flaggedMines => fields.where((item) => item.hasFlag).length;
 
   List<int> _getDimension(){
     switch (difficulty) {

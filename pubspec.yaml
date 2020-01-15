@@ -27,6 +27,7 @@ dependencies:
   flutter_mobx:
   get_it:
   flutter_icons:
+  intl:
 
 dev_dependencies:
   flutter_test:

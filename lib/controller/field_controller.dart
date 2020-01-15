@@ -42,7 +42,7 @@ abstract class _FieldController with Store {
   @computed
   get color{
     if (isCovered) 
-      return Colors.grey;
+      return Colors.brown[200];
 
     if (hasMine)
       return Colors.red;
@@ -85,4 +85,5 @@ abstract class _FieldController with Store {
       ),
     );
   }
+
 }
