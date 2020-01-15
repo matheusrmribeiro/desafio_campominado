@@ -88,7 +88,7 @@ abstract class _MineFieldController with Store {
     if (!initialized)
       initialized = true;
 
-    if ((gameOver) || (winner) || (field.hasFlag))
+    if ((gameOver) || (winner))
       return;
 
     if (field.isCovered)
