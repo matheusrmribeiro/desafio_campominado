@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:mobx/mobx.dart';
 
-part 'field_controller.g.dart';
+part 'field_model.g.dart';
 
-class FieldController = _FieldController with _$FieldController;
+class FieldModel = _FieldModel with _$FieldModel;
 
-abstract class _FieldController with Store {
+abstract class _FieldModel with Store {
   
-  _FieldController({
+  _FieldModel({
   this.posX, 
   this.posY, 
   this.isCovered = true, 

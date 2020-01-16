@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'field_controller.dart';
+part of 'field_model.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,7 +8,7 @@ part of 'field_controller.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$FieldController on _FieldController, Store {
+mixin _$FieldModel on _FieldModel, Store {
   Computed<String> _$minesAroundDescriptionComputed;
 
   @override
@@ -37,7 +37,7 @@ mixin _$FieldController on _FieldController, Store {
   Widget get icon =>
       (_$iconComputed ??= Computed<Widget>(() => super.icon)).value;
 
-  final _$hasMineAtom = Atom(name: '_FieldController.hasMine');
+  final _$hasMineAtom = Atom(name: '_FieldModel.hasMine');
 
   @override
   bool get hasMine {
@@ -54,7 +54,7 @@ mixin _$FieldController on _FieldController, Store {
     }, _$hasMineAtom, name: '${_$hasMineAtom.name}_set');
   }
 
-  final _$hasFlagAtom = Atom(name: '_FieldController.hasFlag');
+  final _$hasFlagAtom = Atom(name: '_FieldModel.hasFlag');
 
   @override
   bool get hasFlag {
@@ -71,7 +71,7 @@ mixin _$FieldController on _FieldController, Store {
     }, _$hasFlagAtom, name: '${_$hasFlagAtom.name}_set');
   }
 
-  final _$isCoveredAtom = Atom(name: '_FieldController.isCovered');
+  final _$isCoveredAtom = Atom(name: '_FieldModel.isCovered');
 
   @override
   bool get isCovered {
@@ -88,7 +88,7 @@ mixin _$FieldController on _FieldController, Store {
     }, _$isCoveredAtom, name: '${_$isCoveredAtom.name}_set');
   }
 
-  final _$minesAroundAtom = Atom(name: '_FieldController.minesAround');
+  final _$minesAroundAtom = Atom(name: '_FieldModel.minesAround');
 
   @override
   int get minesAround {

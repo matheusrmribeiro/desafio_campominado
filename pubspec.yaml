@@ -28,6 +28,7 @@ dependencies:
   get_it:
   flutter_icons:
   intl:
+  vibration:
 
 dev_dependencies:
   flutter_test:

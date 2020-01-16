@@ -1,4 +1,4 @@
-import 'package:desafio_campominado/controller/field_controller.dart';
+import '../model/field_model.dart';
 import 'package:desafio_campominado/controller/minefield_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -141,7 +141,7 @@ class FieldWidget extends StatelessWidget {
 
   const FieldWidget({Key key, this.item, this.onTap, this.onLongPress}) : super(key: key);
 
-  final FieldController item;
+  final FieldModel item;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
 

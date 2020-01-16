@@ -29,14 +29,14 @@ mixin _$MineFieldController on _MineFieldController, Store {
   final _$fieldsAtom = Atom(name: '_MineFieldController.fields');
 
   @override
-  ObservableList<FieldController> get fields {
+  ObservableList<FieldModel> get fields {
     _$fieldsAtom.context.enforceReadPolicy(_$fieldsAtom);
     _$fieldsAtom.reportObserved();
     return super.fields;
   }
 
   @override
-  set fields(ObservableList<FieldController> value) {
+  set fields(ObservableList<FieldModel> value) {
     _$fieldsAtom.context.conditionallyRunInAction(() {
       super.fields = value;
       _$fieldsAtom.reportChanged();
@@ -111,6 +111,13 @@ mixin _$MineFieldController on _MineFieldController, Store {
     }, _$minuteAtom, name: '${_$minuteAtom.name}_set');
   }
 
+  final _$onTapAsyncAction = AsyncAction('onTap');
+
+  @override
+  Future<void> onTap(FieldModel field) {
+    return _$onTapAsyncAction.run(() => super.onTap(field));
+  }
+
   final _$_MineFieldControllerActionController =
       ActionController(name: '_MineFieldController');
 
@@ -135,17 +142,7 @@ mixin _$MineFieldController on _MineFieldController, Store {
   }
 
   @override
-  void onTap(FieldController field) {
-    final _$actionInfo = _$_MineFieldControllerActionController.startAction();
-    try {
-      return super.onTap(field);
-    } finally {
-      _$_MineFieldControllerActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void onLongPress(FieldController field) {
+  void onLongPress(FieldModel field) {
     final _$actionInfo = _$_MineFieldControllerActionController.startAction();
     try {
       return super.onLongPress(field);

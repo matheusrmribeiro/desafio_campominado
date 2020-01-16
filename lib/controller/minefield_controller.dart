@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:intl/intl.dart';
+import 'package:vibration/vibration.dart';
 
-import 'package:desafio_campominado/controller/field_controller.dart';
+import '../model/field_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -23,9 +24,10 @@ abstract class _MineFieldController with Store {
   final Difficulty difficulty;
   final int totalMines;
   var dimension;
+  List<int> mines = [];
 
   @observable
-  ObservableList<FieldController> fields;
+  ObservableList<FieldModel> fields;
 
   @observable
   bool gameOver = false;
@@ -41,11 +43,11 @@ abstract class _MineFieldController with Store {
 
   Timer _timer;
 
-  Map<String, FieldController> matrix = {};
+  Map<String, FieldModel> matrix = {};
 
   @action
-  void initializeGame(){
-    fields = buildFields();
+  void initializeGame() {
+    buildFields();
   }
 
   @action
@@ -54,6 +56,7 @@ abstract class _MineFieldController with Store {
     initialized = false;
     matrix = {};
     fields.clear();
+    mines.clear();
     _timer = null;
     minute = 0;
     hour = 0;
@@ -61,7 +64,7 @@ abstract class _MineFieldController with Store {
   }
 
   @action
-  void onTap(FieldController field){
+  Future<void> onTap(FieldModel field) async {
     if (!initialized)
       initialized = true;
 
@@ -71,9 +74,15 @@ abstract class _MineFieldController with Store {
     if (field.hasMine){
       gameOver = true;
 
-      fields.where((item) => item.hasMine).forEach((item){
+      var fieldsWithMines = fields.where((item) => item.hasMine);
+
+      for (FieldModel item in fieldsWithMines) {
         item.isCovered = false;
-      });
+        if (Vibration.hasVibrator() != null) {
+          Vibration.vibrate(duration: 100);
+        }
+        await Future.delayed(Duration(milliseconds: 150));
+      }
 
       return;
     }
@@ -84,7 +93,7 @@ abstract class _MineFieldController with Store {
   }
 
   @action
-  void onLongPress(FieldController field){
+  void onLongPress(FieldModel field){
     if (!initialized)
       initialized = true;
 
@@ -143,15 +152,14 @@ abstract class _MineFieldController with Store {
     return "${formatter.format(hour)}:${formatter.format(minute)}";
   }
 
-  ObservableList<FieldController> buildFields(){
+  void buildFields() {
     final dimension = _getDimension();
     final dimensionLength = dimension[0]*dimension[1];
     
     int _line = 0;
     int _column = -1;
-    List<int> mines = [];
     
-    generateMines(mines, dimensionLength);
+    generateMines(dimensionLength);
 
     fields = List.generate(dimensionLength, (index){
       if (_column >= dimension[0]-1){
@@ -161,25 +169,23 @@ abstract class _MineFieldController with Store {
       else
         _column++;
       
-      final field = FieldController(posX: _column, posY: _line, hasMine: mines.contains(index)??false); 
+      final field = FieldModel(posX: _column, posY: _line, hasMine: mines.contains(index)??false); 
 
       matrix[[_column, _line].toString()] = field;
       return field;
     }).asObservable();
 
     _adjacentMines();
-
-    return fields;
   }  
 
-  void generateMines(List<int> mines, int dimensionLength){
+  void generateMines(int dimensionLength){
     if (mines.length < totalMines){
       final tryMine = Random();
       int mine = tryMine.nextInt(dimensionLength);
 
       if (!mines.contains(mine))
         mines.add(tryMine.nextInt(dimensionLength));
-      generateMines(mines, dimensionLength);
+      generateMines(dimensionLength);
     }
   }
 
@@ -193,7 +199,7 @@ abstract class _MineFieldController with Store {
   }
 
   bool _mineAt(int x, int y){
-    FieldController field = matrix[[x, y].toString()];
+    FieldModel field = matrix[[x, y].toString()];
 
     if (field == null)
       return false;
@@ -228,7 +234,7 @@ abstract class _MineFieldController with Store {
     });
   }
 
-  void uncoverAdjacentFields({@required FieldController field, Map<String, bool> visited, bool clicked = false}){
+  void uncoverAdjacentFields({@required FieldModel field, Map<String, bool> visited, bool clicked = false}){
     if (field == null)
       return;
 
