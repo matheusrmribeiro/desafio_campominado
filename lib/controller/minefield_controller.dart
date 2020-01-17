@@ -16,18 +16,19 @@ enum Difficulty { easy, medium, hard }
 
 abstract class _MineFieldController with Store {
 
-  _MineFieldController({this.difficulty, this.totalMines}){
+  _MineFieldController({this.difficulty}){
     initializeGame();
     dimension = _getDimension();
   }
   
-  final Difficulty difficulty;
-  final int totalMines;
   var dimension;
   List<int> mines = [];
 
   @observable
-  ObservableList<FieldModel> fields;
+  Difficulty difficulty;
+
+  @observable
+  ObservableList<FieldModel> fields = <FieldModel>[].asObservable();
 
   @observable
   bool gameOver = false;
@@ -55,8 +56,10 @@ abstract class _MineFieldController with Store {
     gameOver = false;
     initialized = false;
     matrix = {};
-    fields.clear();
-    mines.clear();
+    if (fields.isNotEmpty)
+      fields.clear();
+    if (fields.isNotEmpty)
+      mines.clear();
     _timer = null;
     minute = 0;
     hour = 0;
@@ -74,15 +77,7 @@ abstract class _MineFieldController with Store {
     if (field.hasMine){
       gameOver = true;
 
-      var fieldsWithMines = fields.where((item) => item.hasMine);
-
-      for (FieldModel item in fieldsWithMines) {
-        item.isCovered = false;
-        if (Vibration.hasVibrator() != null) {
-          Vibration.vibrate(duration: 100);
-        }
-        await Future.delayed(Duration(milliseconds: 150));
-      }
+    await uncoverMines(field);
 
       return;
     }
@@ -102,6 +97,19 @@ abstract class _MineFieldController with Store {
 
     if (field.isCovered)
       field.hasFlag=!field.hasFlag;
+  }
+
+  @computed
+  int get totalMines{
+    Difficulty diff = difficulty;
+    switch (diff) {
+      case Difficulty.medium : 
+        return 10;
+      case Difficulty.hard :
+        return 20;
+      default:
+        return 5;
+    }
   }
 
   @computed
@@ -234,6 +242,26 @@ abstract class _MineFieldController with Store {
     });
   }
 
+  Future<void> uncoverMines(FieldModel firstField) async {
+      var fieldsWithMines = fields.where((item) => item.hasMine);
+
+      firstField.isCovered = false;
+
+      if (Vibration.hasVibrator() != null) {
+        Vibration.vibrate(duration: 100);
+      }
+      
+      await Future.delayed(Duration(milliseconds: 150));
+
+      for (FieldModel item in fieldsWithMines) {
+        item.isCovered = false;
+        if (Vibration.hasVibrator() != null) {
+          Vibration.vibrate(duration: 100);
+        }
+        await Future.delayed(Duration(milliseconds: 150));
+      }
+  }
+
   void uncoverAdjacentFields({@required FieldModel field, Map<String, bool> visited, bool clicked = false}){
     if (field == null)
       return;
@@ -269,4 +297,5 @@ abstract class _MineFieldController with Store {
       uncoverAdjacentFields(field: matrix[[x, y+1].toString()], visited: visited);
     }
   }
+
 }

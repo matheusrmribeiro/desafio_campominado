@@ -9,6 +9,11 @@ part of 'minefield_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$MineFieldController on _MineFieldController, Store {
+  Computed<int> _$totalMinesComputed;
+
+  @override
+  int get totalMines =>
+      (_$totalMinesComputed ??= Computed<int>(() => super.totalMines)).value;
   Computed<dynamic> _$flaggedMinesComputed;
 
   @override
@@ -25,6 +30,23 @@ mixin _$MineFieldController on _MineFieldController, Store {
   @override
   String get time =>
       (_$timeComputed ??= Computed<String>(() => super.time)).value;
+
+  final _$difficultyAtom = Atom(name: '_MineFieldController.difficulty');
+
+  @override
+  Difficulty get difficulty {
+    _$difficultyAtom.context.enforceReadPolicy(_$difficultyAtom);
+    _$difficultyAtom.reportObserved();
+    return super.difficulty;
+  }
+
+  @override
+  set difficulty(Difficulty value) {
+    _$difficultyAtom.context.conditionallyRunInAction(() {
+      super.difficulty = value;
+      _$difficultyAtom.reportChanged();
+    }, _$difficultyAtom, name: '${_$difficultyAtom.name}_set');
+  }
 
   final _$fieldsAtom = Atom(name: '_MineFieldController.fields');
 

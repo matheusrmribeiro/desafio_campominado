@@ -1,3 +1,5 @@
+import 'package:mobx/mobx.dart';
+
 import '../model/field_model.dart';
 import 'package:desafio_campominado/controller/minefield_controller.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +14,14 @@ class MineField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MineFieldController minefield = MineFieldController(difficulty: Difficulty.easy, totalMines: 10);
+    MineFieldController minefield = MineFieldController(difficulty: Difficulty.easy);
 
     return Scaffold(
       body: Container(
         child: Stack(
           children: <Widget>[
             Container(
-              child: Scoreboard(minefield: minefield),
+              child: SettingsBoard(minefield: minefield),
             ),
             Align(
               alignment: Alignment.center,
@@ -48,9 +50,26 @@ class MineField extends StatelessWidget {
                         }
                       ),
                     ),
-                    SelectableText("Meu código: M1N3012312",
-                      style: TextStyle(
-                        color: Colors.brown[200]
+                    Container(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          SelectableText("Meu código: M1N3012312",
+                            style: TextStyle(
+                              color: Colors.brown[200]
+                            ),
+                          ),
+                          Observer(
+                            builder: (_) {
+                              return Text(minefield.time,
+                                style: TextStyle(
+                                  color: Colors.brown[200]
+                                )
+                              );
+                            }
+                          ),
+                        ],
                       ),
                     )
                   ],
@@ -176,9 +195,9 @@ class FieldWidget extends StatelessWidget {
   }
 }
 
-class Scoreboard extends StatelessWidget {
+class SettingsBoard extends StatelessWidget {
 
-  const Scoreboard({Key key, this.minefield}) : super(key: key);
+  const SettingsBoard({Key key, this.minefield}) : super(key: key);
 
   final MineFieldController minefield;
 
@@ -187,30 +206,38 @@ class Scoreboard extends StatelessWidget {
     return SafeArea(
       child: Container(
         padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-        height: 200,
+        height: 100,
         child: Column(
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Container(
-                  width: 52,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(120),
-                    border: Border.all(color: Colors.brown, width: 1.5)
-                  ),
-                  child: Center(
-                    child: Observer(
-                      builder: (_) {
-                        return Text(minefield.time,
-                          style: TextStyle(
-                            color: Colors.brown,
-                            fontSize: 18,
-                          )
-                        );
-                      }
-                    ),
+                InfoBoard(
+                  title: "Dificuldade",
+                  child: Observer(
+                    builder: (_) {
+                      var difficulties = ["Fácil", "Médio", "Difícil"];
+                      return DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          value: minefield.difficulty.index,
+                          items: difficulties.map((String item){
+                            return DropdownMenuItem(
+                              child: Text(item,
+                                style: TextStyle(
+                                  color: Colors.brown,
+                                  fontSize: 15,
+                                )
+                              ),
+                              value: difficulties.indexOf(item),
+                            );
+                          }).toList(),
+                          onChanged: (int value){
+                            minefield.difficulty = Difficulty.values[value];
+                            minefield.restart();
+                          },
+                        ),
+                      );
+                    }
                   ),
                 ),                
                 InfoBoard(
