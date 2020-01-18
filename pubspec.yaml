@@ -29,6 +29,10 @@ dependencies:
   flutter_icons:
   intl:
   vibration:
+  cloud_firestore: 0.12.11
+  firebase_auth: 0.15.3
+  flutter_speed_dial: ^1.2.5
+  esys_flutter_share:
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:vibration/vibration.dart';
 
@@ -17,15 +19,19 @@ enum Difficulty { easy, medium, hard }
 abstract class _MineFieldController with Store {
 
   _MineFieldController({this.difficulty}){
+    firebaseLogin();
     initializeGame();
     dimension = _getDimension();
   }
-  
+
   var dimension;
   List<int> mines = [];
 
   @observable
   Difficulty difficulty;
+
+  @observable
+  bool playing = true;
 
   @observable
   ObservableList<FieldModel> fields = <FieldModel>[].asObservable();
@@ -42,6 +48,15 @@ abstract class _MineFieldController with Store {
   @observable
   int minute = 0;
 
+  @observable
+  String key = "";
+
+  String _documentId = "";
+  List<String> onTapLog = [];
+  List<String> onLongPressLog = [];
+  String _documentIdListening = "";
+  StreamSubscription<QuerySnapshot> subscription;
+
   Timer _timer;
 
   Map<String, FieldModel> matrix = {};
@@ -49,6 +64,13 @@ abstract class _MineFieldController with Store {
   @action
   void initializeGame() {
     buildFields();
+  }
+
+  @action
+  Future<void> firebaseLogin() async {
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    AuthResult request = await _firebaseAuth.signInAnonymously();
+    key = request.user.uid;
   }
 
   @action
@@ -68,16 +90,25 @@ abstract class _MineFieldController with Store {
 
   @action
   Future<void> onTap(FieldModel field) async {
-    if (!initialized)
+    if (!initialized){
       initialized = true;
+      firebaseInitializeGame();
+    }
 
     if ((gameOver) || (winner) || (field.hasFlag))
       return;
+
+    if (playing){
+      onTapLog.add([field.posX, field.posY].toString());
+      firebaseOnTap();
+    }
     
     if (field.hasMine){
       gameOver = true;
 
-    await uncoverMines(field);
+      firebaseFinalizeGame(gameOver: true);
+
+      await uncoverMines(field);
 
       return;
     }
@@ -95,8 +126,39 @@ abstract class _MineFieldController with Store {
     if ((gameOver) || (winner))
       return;
 
-    if (field.isCovered)
+    if (field.isCovered){
       field.hasFlag=!field.hasFlag;
+      if (playing){
+        onLongPressLog.add([field.posX, field.posY].toString());
+        firebaseOnLongPress();
+      }
+    }
+  }
+
+  @action
+  void setPlaying(){
+    playing = true;
+    subscription.cancel();
+    restart();
+  }
+
+  @action
+  void setWatching(String userKey){
+    playing = false;
+    
+    List<String> longPressList = [];
+    List<String> tapList = [];
+
+    if (subscription != null)
+      subscription.cancel();
+
+    subscription = Firestore.instance.collection('minesweeper')
+    .where("id", isEqualTo: userKey)
+    .orderBy("date", descending: true)
+    .limit(1).snapshots().listen((data){
+      firebaseOnDataListen(data.documents.last, tapList, longPressList);
+    });
+
   }
 
   @computed
@@ -130,8 +192,11 @@ abstract class _MineFieldController with Store {
     else
       isWinner = false;
 
-    if (fields.where((item) => item.isCovered).length > 0)
+    if (fields.where((item) => item.isCovered && !item.hasMine).length > 0)
       isWinner = false;
+
+    if (isWinner)
+      firebaseFinalizeGame(gameOver: false);
 
     return isWinner;
   }
@@ -160,6 +225,87 @@ abstract class _MineFieldController with Store {
     return "${formatter.format(hour)}:${formatter.format(minute)}";
   }
 
+  void firebaseInitializeGame(){
+    if (!playing)
+      return;
+      
+    _documentId =  Firestore.instance.collection('minesweeper').document().documentID;
+    Firestore.instance.collection('minesweeper').document(_documentId).setData(
+      {
+        'id': key,
+        'date': Timestamp.now(),
+        'difficulty': difficulty.index,
+        'mines': mines,
+        'winner': false,
+        'gameOver': false
+      }
+    );
+  }
+
+  void firebaseOnDataListen(DocumentSnapshot document, List<String> tapList, List<String> longPressList){
+    if (_documentIdListening != document.documentID){
+      _documentIdListening = document.documentID;
+      difficulty = Difficulty.values[document.data["difficulty"]];
+      mines = List.castFrom(document.data["mines"]);
+      tapList.clear();
+      longPressList.clear();
+      gameOver = false;
+      initializeGame();
+      initialized = true;
+    }
+
+    
+    final List<String> onTapLog = List.castFrom(document.data["onTapLog"]??[]);
+    final List<String> onLongPressLog = List.castFrom(document.data["onLongPressLog"]??[]);
+    if (onTapLog.length > tapList.length){
+      for (var item in onTapLog.where((item) => !tapList.contains(item) )){
+        onTap(matrix[item]);
+      }
+    }
+
+    if (onLongPressLog.length > tapList.length){
+      for (var item in onLongPressLog.where((item) => !tapList.contains(item) )){
+        onLongPress(matrix[item]);
+      }
+    }  
+  }
+
+  void firebaseOnTap(){
+    if (!playing)
+      return;
+
+    Firestore.instance.collection('minesweeper').document(_documentId).setData(
+      {
+        'onTapLog': onTapLog
+      },
+      merge: true
+    );
+  }
+
+  void firebaseOnLongPress(){
+    if (!playing)
+      return;
+
+    Firestore.instance.collection('minesweeper').document(_documentId).setData(
+      {
+        'onLongPressLog': onLongPressLog
+      },
+      merge: true
+    );
+  }
+
+  void firebaseFinalizeGame({ bool gameOver = false }){
+    if (!playing)
+      return;
+
+    final data = (gameOver) ? { 'gameOver': true} : { 'winner': true };
+    
+    Firestore.instance.collection('minesweeper').document(_documentId).setData(
+      data,
+      merge: true
+    );
+  }
+
   void buildFields() {
     final dimension = _getDimension();
     final dimensionLength = dimension[0]*dimension[1];
@@ -167,7 +313,8 @@ abstract class _MineFieldController with Store {
     int _line = 0;
     int _column = -1;
     
-    generateMines(dimensionLength);
+    if (mines.isEmpty)
+      generateMines(dimensionLength);
 
     fields = List.generate(dimensionLength, (index){
       if (_column >= dimension[0]-1){

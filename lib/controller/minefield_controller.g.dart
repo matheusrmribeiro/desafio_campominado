@@ -48,6 +48,23 @@ mixin _$MineFieldController on _MineFieldController, Store {
     }, _$difficultyAtom, name: '${_$difficultyAtom.name}_set');
   }
 
+  final _$playingAtom = Atom(name: '_MineFieldController.playing');
+
+  @override
+  bool get playing {
+    _$playingAtom.context.enforceReadPolicy(_$playingAtom);
+    _$playingAtom.reportObserved();
+    return super.playing;
+  }
+
+  @override
+  set playing(bool value) {
+    _$playingAtom.context.conditionallyRunInAction(() {
+      super.playing = value;
+      _$playingAtom.reportChanged();
+    }, _$playingAtom, name: '${_$playingAtom.name}_set');
+  }
+
   final _$fieldsAtom = Atom(name: '_MineFieldController.fields');
 
   @override
@@ -131,6 +148,30 @@ mixin _$MineFieldController on _MineFieldController, Store {
       super.minute = value;
       _$minuteAtom.reportChanged();
     }, _$minuteAtom, name: '${_$minuteAtom.name}_set');
+  }
+
+  final _$keyAtom = Atom(name: '_MineFieldController.key');
+
+  @override
+  String get key {
+    _$keyAtom.context.enforceReadPolicy(_$keyAtom);
+    _$keyAtom.reportObserved();
+    return super.key;
+  }
+
+  @override
+  set key(String value) {
+    _$keyAtom.context.conditionallyRunInAction(() {
+      super.key = value;
+      _$keyAtom.reportChanged();
+    }, _$keyAtom, name: '${_$keyAtom.name}_set');
+  }
+
+  final _$firebaseLoginAsyncAction = AsyncAction('firebaseLogin');
+
+  @override
+  Future<void> firebaseLogin() {
+    return _$firebaseLoginAsyncAction.run(() => super.firebaseLogin());
   }
 
   final _$onTapAsyncAction = AsyncAction('onTap');

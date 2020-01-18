@@ -37,7 +37,7 @@ class Home extends StatelessWidget {
                         child: RaisedButton(
                           child: Text("Jogar"),
                           onPressed: (){
-                            Navigation.navigaTo(context, MineField(Choose.play));
+                            Navigation.navigaTo(context, MineField());
                           },
                         ),
                       ),
@@ -46,7 +46,7 @@ class Home extends StatelessWidget {
                         child: RaisedButton(
                           child: Text("Assistir"),
                           onPressed: (){
-                            Navigation.navigaTo(context, MineField(Choose.watch));
+                            Navigation.navigaTo(context, MineField());
                           },
                         ),
                       )

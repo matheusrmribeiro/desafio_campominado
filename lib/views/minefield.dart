@@ -1,4 +1,5 @@
-import 'package:mobx/mobx.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../model/field_model.dart';
 import 'package:desafio_campominado/controller/minefield_controller.dart';
@@ -6,15 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-enum Choose { play, watch }
 
 class MineField extends StatelessWidget {
-  MineField(this.choose);
-  final Choose choose;
-
   @override
   Widget build(BuildContext context) {
+    
     MineFieldController minefield = MineFieldController(difficulty: Difficulty.easy);
+    final primaryColor = Colors.brown;
+    final accentColor = Colors.brown[400];
 
     return Scaffold(
       body: Container(
@@ -55,10 +55,14 @@ class MineField extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          SelectableText("Meu código: M1N3012312",
-                            style: TextStyle(
-                              color: Colors.brown[200]
-                            ),
+                          Observer(
+                            builder: (_) {
+                              return Text((minefield.playing) ? "Jogando" : "Assistindo",
+                                style: TextStyle(
+                                  color: Colors.brown[200]
+                                ),
+                              );
+                            }
                           ),
                           Observer(
                             builder: (_) {
@@ -79,7 +83,7 @@ class MineField extends StatelessWidget {
             Observer(
               builder: (_) {
                 return Visibility(
-                  visible: minefield.gameOver || minefield.winner,
+                  visible: minefield.gameOver || minefield.winner || !minefield.playing,
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -89,9 +93,12 @@ class MineField extends StatelessWidget {
                       child: RaisedButton(
                         color: Colors.brown[300],
                         onPressed: (){
-                          minefield.restart();
+                          if (minefield.playing)
+                            minefield.restart();
+                          else
+                            minefield.setPlaying();
                         },
-                        child: Text("Recomeçar",
+                        child: Text((minefield.playing) ? "Recomeçar" : "Jogar",
                           style: TextStyle(
                             color: Colors.white
                           ),                  
@@ -101,26 +108,6 @@ class MineField extends StatelessWidget {
                   ),
                 );
               }
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                width: 52,
-                height: 52,
-                margin: EdgeInsets.only(left: 15, bottom: 15),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(120),
-                  border: Border.all(color: Colors.brown, width: 1.5)
-                ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(120),
-                  splashColor: Colors.brown[200],
-                  onTap: (){ Navigator.of(context).pop(); },
-                  child: Center(
-                    child: Icon(Feather.arrow_left, color: Colors.brown,)
-                  ),
-                ),
-              ),            
             ),
             Align(
               alignment: Alignment.center,
@@ -152,6 +139,114 @@ class MineField extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        overlayOpacity: 0.1,
+        overlayColor: primaryColor,
+        backgroundColor: primaryColor,
+        tooltip: "Ações",
+        children: [
+          SpeedDialChild(
+            label: "Compartilhar código",
+            backgroundColor: accentColor,
+            labelBackgroundColor: accentColor,
+            labelStyle: TextStyle(
+              color: Colors.white
+            ),
+            child: Icon(Icons.mobile_screen_share),
+            onTap: () {
+              Share.text("Meu código", minefield.key, "text/plain");
+            }
+          ),
+          SpeedDialChild(
+            label: "Assistir amigo",
+            backgroundColor: accentColor,
+            labelBackgroundColor: accentColor,
+            labelStyle: TextStyle(
+              color: Colors.white
+            ),
+            child: Icon(Icons.ondemand_video),
+            onTap: (){
+              showDialog(
+                context: context,
+                builder: (context){
+                  final TextEditingController controller = TextEditingController();
+                  return AlertDialog(
+                    title: Text("Assistir"),
+                    content: Container(
+                      height: MediaQuery.of(context).size.height*0.4,
+                      child: TextField(
+                        controller: controller,
+                        decoration: InputDecoration(
+                          labelText: "Código do amigo"
+                        )
+                      )
+                    ),
+                    actions: <Widget>[
+                      MaterialButton(
+                        child: Text("Cancelar"),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      MaterialButton(
+                        child: Text("Assistir"),
+                        onPressed: (){
+                          minefield.setWatching(controller.text);
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                }
+              );
+            }
+          ),
+          SpeedDialChild(
+            label: "Ajuda",
+            backgroundColor: accentColor,
+            labelBackgroundColor: accentColor,
+            labelStyle: TextStyle(
+              color: Colors.white
+            ),
+            child: Icon(Icons.help),
+            onTap: (){
+              showDialog(
+                context: context,
+                builder: (context){
+                  return AlertDialog(
+                    title: Text("Como jogar"),
+                    content: Container(
+                      height: MediaQuery.of(context).size.height*0.4,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text("1. Ao tocar em algum campo, o mesmo será revelado."),
+                            SizedBox(height: 20,),
+                            Text("2. Ao manter o dedo pressionado em algum campo, o mesmo será marcado com uma bandeira, que indica que ali pode existir uma mina."),
+                            SizedBox(height: 20,),
+                            Text("3. Para remover uma bandeira, basta manter o dedo pressionado sobre ela."),
+                            SizedBox(height: 20,),
+                            Text("4. Você ganha o jogo quando marcar todas as minas e descobrir todos os campos sem minas."),
+                            SizedBox(height: 20,),
+                            Text("5. Você perde o jogo se clicar em algum campo que possuí alguma mina."),
+                            SizedBox(height: 20,),
+                          ],
+                        ),
+                      ),
+                    ),
+                    actions: <Widget>[
+                      MaterialButton(
+                        child: Text("Cancelar"),
+                        onPressed: () => Navigator.of(context).pop(),
+                      )
+                    ],
+                  );
+                }
+              );
+            },
+          ),          
+        ]
+      )
     );
   }
 }

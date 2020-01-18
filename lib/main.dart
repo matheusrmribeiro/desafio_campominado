@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'views/minefield.dart';
 import 'package:flutter/material.dart';
-import 'views/home.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,17 +10,20 @@ void main() {
 class MyApp extends StatelessWidget {
   
   final ThemeData theme = ThemeData(
-    primaryColor: Colors.orange,
-    accentColor: Colors.teal,
+    primaryColor: Colors.brown,
+    accentColor: Colors.brown[300],
     buttonColor: Colors.orange
   );
 
   @override
   Widget build(BuildContext context) {
+    
+    Firestore.instance.settings(persistenceEnabled: false);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Campo minado",
-      home: Home(),
+      home: MineField(),
       theme: theme,
     );
   }
