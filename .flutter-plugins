@@ -1,9 +1,9 @@
 # This is a generated file; do not edit or check into version control.
-cloud_firestore=D:\\FlutterSDK\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\cloud_firestore-0.12.11\\
-esys_flutter_share=D:\\FlutterSDK\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\esys_flutter_share-1.0.2\\
-firebase_auth=D:\\FlutterSDK\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_auth-0.15.3\\
-firebase_auth_web=D:\\FlutterSDK\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_auth_web-0.1.1+4\\
-firebase_core=D:\\FlutterSDK\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_core-0.4.3+2\\
-firebase_core_web=D:\\FlutterSDK\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_core_web-0.1.1+2\\
-path_provider=D:\\FlutterSDK\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider-1.5.1\\
-vibration=D:\\FlutterSDK\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\vibration-1.2.2\\
+cloud_firestore=D:\\FlutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\cloud_firestore-0.12.11\\
+esys_flutter_share=D:\\FlutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\esys_flutter_share-1.0.2\\
+firebase_auth=D:\\FlutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_auth-0.15.3\\
+firebase_auth_web=D:\\FlutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_auth_web-0.1.1+4\\
+firebase_core=D:\\FlutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_core-0.4.3+2\\
+firebase_core_web=D:\\FlutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_core_web-0.1.1+2\\
+path_provider=D:\\FlutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider-1.5.1\\
+vibration=D:\\FlutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\vibration-1.2.2\\

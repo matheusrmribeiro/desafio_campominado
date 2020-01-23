@@ -213,4 +213,24 @@ mixin _$MineFieldController on _MineFieldController, Store {
       _$_MineFieldControllerActionController.endAction(_$actionInfo);
     }
   }
+
+  @override
+  void setPlaying() {
+    final _$actionInfo = _$_MineFieldControllerActionController.startAction();
+    try {
+      return super.setPlaying();
+    } finally {
+      _$_MineFieldControllerActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setWatching(String userKey) {
+    final _$actionInfo = _$_MineFieldControllerActionController.startAction();
+    try {
+      return super.setWatching(userKey);
+    } finally {
+      _$_MineFieldControllerActionController.endAction(_$actionInfo);
+    }
+  }
 }

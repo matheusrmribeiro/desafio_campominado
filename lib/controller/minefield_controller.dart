@@ -80,7 +80,7 @@ abstract class _MineFieldController with Store {
     matrix = {};
     if (fields.isNotEmpty)
       fields.clear();
-    if (fields.isNotEmpty)
+    if (mines.isNotEmpty)
       mines.clear();
     _timer = null;
     minute = 0;
@@ -102,6 +102,7 @@ abstract class _MineFieldController with Store {
       onTapLog.add([field.posX, field.posY].toString());
       firebaseOnTap();
     }
+
     
     if (field.hasMine){
       gameOver = true;
@@ -153,11 +154,11 @@ abstract class _MineFieldController with Store {
       subscription.cancel();
 
     subscription = Firestore.instance.collection('minesweeper')
-    .where("id", isEqualTo: userKey)
-    .orderBy("date", descending: true)
-    .limit(1).snapshots().listen((data){
-      firebaseOnDataListen(data.documents.last, tapList, longPressList);
-    });
+      .where("id", isEqualTo: userKey)
+      .orderBy("date", descending: true)
+      .limit(1).snapshots().listen((data){
+        firebaseOnDataListen(data.documents.last, tapList, longPressList);
+      });
 
   }
 

@@ -1,5 +1,6 @@
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../model/field_model.dart';
 import 'package:desafio_campominado/controller/minefield_controller.dart';
@@ -16,6 +17,9 @@ class MineField extends StatelessWidget {
     final primaryColor = Colors.brown;
     final accentColor = Colors.brown[400];
 
+    final minefieldHeight = MediaQuery.of(context).size.height*0.6;
+    final minefieldWidth = MediaQuery.of(context).size.width*0.9;
+
     return Scaffold(
       body: Container(
         child: Stack(
@@ -27,25 +31,28 @@ class MineField extends StatelessWidget {
               alignment: Alignment.center,
               child: Container(
                 padding: EdgeInsets.only(left: 10, right: 10),
-                height: 582,
+                height: minefieldHeight,
+                width: minefieldWidth,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Expanded(
                       child: Observer(
                         builder: (_) {
-                          return GridView.count(
-                            physics: NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.all(0),
-                            crossAxisCount: 10,
-                            crossAxisSpacing: 1,
-                            mainAxisSpacing: 1,
+                          return Wrap(
+                            spacing: 2,
+                            runSpacing: 2,
+                            direction: Axis.horizontal,
                             children: minefield.fields.map((item){
-                              return FieldWidget(item: item, 
-                                onTap: (){ minefield.onTap(item); },
-                                onLongPress: (){ minefield.onLongPress(item); },
+                              return SizedBox(
+                                height: (minefieldHeight - 50) / 15,
+                                width: (minefieldWidth - 40) / 10,
+                                child: FieldWidget(item: item, 
+                                  onTap: (){ minefield.onTap(item); },
+                                  onLongPress: (){ minefield.onLongPress(item); },
+                                ),
                               );
-                            }).toList()
+                            }).toList(),
                           );
                         }
                       ),
@@ -189,15 +196,16 @@ class MineField extends StatelessWidget {
                       ),
                       MaterialButton(
                         child: Text("Assistir"),
-                        onPressed: (){
+                        onPressed: () { 
                           minefield.setWatching(controller.text);
                           Navigator.of(context).pop();
-                        },
+                         } 
                       )
                     ],
                   );
                 }
               );
+              
             }
           ),
           SpeedDialChild(
