@@ -1,26 +1,24 @@
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../model/field_model.dart';
-import 'package:desafio_campominado/controller/minefield_controller.dart';
+import '../controller/minefield_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 
 class MineField extends StatelessWidget {
+  final MineFieldController minefield = MineFieldController(difficulty: Difficulty.easy);
+  final primaryColor = Colors.brown;
+  final accentColor = Colors.brown[400];
+
   @override
   Widget build(BuildContext context) {
-    
-    MineFieldController minefield = MineFieldController(difficulty: Difficulty.easy);
-    final primaryColor = Colors.brown;
-    final accentColor = Colors.brown[400];
-
     final minefieldHeight = MediaQuery.of(context).size.height*0.6;
     final minefieldWidth = MediaQuery.of(context).size.width*0.9;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         child: Stack(
           children: <Widget>[
@@ -48,8 +46,14 @@ class MineField extends StatelessWidget {
                                 height: (minefieldHeight - 50) / 15,
                                 width: (minefieldWidth - 40) / 10,
                                 child: FieldWidget(item: item, 
-                                  onTap: (){ minefield.onTap(item); },
-                                  onLongPress: (){ minefield.onLongPress(item); },
+                                  onTap: (){ 
+                                    if (minefield.playing)
+                                      minefield.onTap(item); 
+                                  },
+                                  onLongPress: (){
+                                    if (minefield.playing)
+                                      minefield.onLongPress(item);
+                                 },
                                 ),
                               );
                             }).toList(),

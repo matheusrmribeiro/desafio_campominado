@@ -81,7 +81,7 @@ abstract class _MineFieldController with Store {
     if (fields.isNotEmpty)
       fields.clear();
     if (mines.isNotEmpty)
-      mines.clear();
+      mines = [];
     _timer = null;
     minute = 0;
     hour = 0;
@@ -103,7 +103,6 @@ abstract class _MineFieldController with Store {
       firebaseOnTap();
     }
 
-    
     if (field.hasMine){
       gameOver = true;
 
@@ -255,7 +254,6 @@ abstract class _MineFieldController with Store {
       initialized = true;
     }
 
-    
     final List<String> onTapLog = List.castFrom(document.data["onTapLog"]??[]);
     final List<String> onLongPressLog = List.castFrom(document.data["onLongPressLog"]??[]);
     if (onTapLog.length > tapList.length){
