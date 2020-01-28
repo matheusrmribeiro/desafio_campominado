@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'minefield_controller.dart';
+part of 'minesweeper_controller.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,7 +8,7 @@ part of 'minefield_controller.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$MineFieldController on _MineFieldController, Store {
+mixin _$MinesWeeperController on _MinesWeeperController, Store {
   Computed<int> _$totalMinesComputed;
 
   @override
@@ -31,7 +31,7 @@ mixin _$MineFieldController on _MineFieldController, Store {
   String get time =>
       (_$timeComputed ??= Computed<String>(() => super.time)).value;
 
-  final _$difficultyAtom = Atom(name: '_MineFieldController.difficulty');
+  final _$difficultyAtom = Atom(name: '_MinesWeeperController.difficulty');
 
   @override
   Difficulty get difficulty {
@@ -48,7 +48,7 @@ mixin _$MineFieldController on _MineFieldController, Store {
     }, _$difficultyAtom, name: '${_$difficultyAtom.name}_set');
   }
 
-  final _$playingAtom = Atom(name: '_MineFieldController.playing');
+  final _$playingAtom = Atom(name: '_MinesWeeperController.playing');
 
   @override
   bool get playing {
@@ -65,7 +65,7 @@ mixin _$MineFieldController on _MineFieldController, Store {
     }, _$playingAtom, name: '${_$playingAtom.name}_set');
   }
 
-  final _$fieldsAtom = Atom(name: '_MineFieldController.fields');
+  final _$fieldsAtom = Atom(name: '_MinesWeeperController.fields');
 
   @override
   ObservableList<FieldModel> get fields {
@@ -82,7 +82,7 @@ mixin _$MineFieldController on _MineFieldController, Store {
     }, _$fieldsAtom, name: '${_$fieldsAtom.name}_set');
   }
 
-  final _$gameOverAtom = Atom(name: '_MineFieldController.gameOver');
+  final _$gameOverAtom = Atom(name: '_MinesWeeperController.gameOver');
 
   @override
   bool get gameOver {
@@ -99,7 +99,7 @@ mixin _$MineFieldController on _MineFieldController, Store {
     }, _$gameOverAtom, name: '${_$gameOverAtom.name}_set');
   }
 
-  final _$initializedAtom = Atom(name: '_MineFieldController.initialized');
+  final _$initializedAtom = Atom(name: '_MinesWeeperController.initialized');
 
   @override
   bool get initialized {
@@ -116,7 +116,7 @@ mixin _$MineFieldController on _MineFieldController, Store {
     }, _$initializedAtom, name: '${_$initializedAtom.name}_set');
   }
 
-  final _$hourAtom = Atom(name: '_MineFieldController.hour');
+  final _$hourAtom = Atom(name: '_MinesWeeperController.hour');
 
   @override
   int get hour {
@@ -133,7 +133,7 @@ mixin _$MineFieldController on _MineFieldController, Store {
     }, _$hourAtom, name: '${_$hourAtom.name}_set');
   }
 
-  final _$minuteAtom = Atom(name: '_MineFieldController.minute');
+  final _$minuteAtom = Atom(name: '_MinesWeeperController.minute');
 
   @override
   int get minute {
@@ -150,7 +150,7 @@ mixin _$MineFieldController on _MineFieldController, Store {
     }, _$minuteAtom, name: '${_$minuteAtom.name}_set');
   }
 
-  final _$keyAtom = Atom(name: '_MineFieldController.key');
+  final _$keyAtom = Atom(name: '_MinesWeeperController.key');
 
   @override
   String get key {
@@ -181,56 +181,56 @@ mixin _$MineFieldController on _MineFieldController, Store {
     return _$onTapAsyncAction.run(() => super.onTap(field));
   }
 
-  final _$_MineFieldControllerActionController =
-      ActionController(name: '_MineFieldController');
+  final _$_MinesWeeperControllerActionController =
+      ActionController(name: '_MinesWeeperController');
 
   @override
   void initializeGame() {
-    final _$actionInfo = _$_MineFieldControllerActionController.startAction();
+    final _$actionInfo = _$_MinesWeeperControllerActionController.startAction();
     try {
       return super.initializeGame();
     } finally {
-      _$_MineFieldControllerActionController.endAction(_$actionInfo);
+      _$_MinesWeeperControllerActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void restart() {
-    final _$actionInfo = _$_MineFieldControllerActionController.startAction();
+    final _$actionInfo = _$_MinesWeeperControllerActionController.startAction();
     try {
       return super.restart();
     } finally {
-      _$_MineFieldControllerActionController.endAction(_$actionInfo);
+      _$_MinesWeeperControllerActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void onLongPress(FieldModel field) {
-    final _$actionInfo = _$_MineFieldControllerActionController.startAction();
+    final _$actionInfo = _$_MinesWeeperControllerActionController.startAction();
     try {
       return super.onLongPress(field);
     } finally {
-      _$_MineFieldControllerActionController.endAction(_$actionInfo);
+      _$_MinesWeeperControllerActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void setPlaying() {
-    final _$actionInfo = _$_MineFieldControllerActionController.startAction();
+    final _$actionInfo = _$_MinesWeeperControllerActionController.startAction();
     try {
       return super.setPlaying();
     } finally {
-      _$_MineFieldControllerActionController.endAction(_$actionInfo);
+      _$_MinesWeeperControllerActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void setWatching(String userKey) {
-    final _$actionInfo = _$_MineFieldControllerActionController.startAction();
+    final _$actionInfo = _$_MinesWeeperControllerActionController.startAction();
     try {
       return super.setWatching(userKey);
     } finally {
-      _$_MineFieldControllerActionController.endAction(_$actionInfo);
+      _$_MinesWeeperControllerActionController.endAction(_$actionInfo);
     }
   }
 }

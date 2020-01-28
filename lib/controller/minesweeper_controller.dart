@@ -10,15 +10,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
-part 'minefield_controller.g.dart';
+part 'minesweeper_controller.g.dart';
 
-class MineFieldController = _MineFieldController with _$MineFieldController;
+class MinesWeeperController = _MinesWeeperController with _$MinesWeeperController;
 
 enum Difficulty { easy, medium, hard }
 
-abstract class _MineFieldController with Store {
+abstract class _MinesWeeperController with Store {
 
-  _MineFieldController({this.difficulty}){
+  _MinesWeeperController({this.difficulty}){
     firebaseLogin();
     initializeGame();
     dimension = _getDimension();

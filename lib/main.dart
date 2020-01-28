@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'views/minefield.dart';
+import 'views/minesweeper.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Campo minado",
-      home: MineField(),
+      home: MinesWeeper(),
       theme: theme,
     );
   }
