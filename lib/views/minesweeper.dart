@@ -136,11 +136,16 @@ class SettingsBoard extends StatelessWidget {
                   title: "Minas",
                   child: Observer(
                     builder: (_) {
-                      return Text(minesweeper.flaggedMines.toString(),
-                        style: TextStyle(
-                          color: Colors.brown,
-                          fontSize: 18,
-                        )
+                      return SizedBox(
+                        height: 45,
+                        child: Center(
+                          child: Text(minesweeper.flaggedMines.toString(),
+                            style: TextStyle(
+                              color: Colors.brown,
+                              fontSize: 18,
+                            )
+                          ),
+                        ),
                       );
                     }
                   ),

@@ -305,7 +305,7 @@ abstract class _MinesWeeperController with Store {
     );
   }
 
-  void buildFields() {
+  void buildFields() async {
     final dimension = _getDimension();
     final dimensionLength = dimension[0]*dimension[1];
     
@@ -315,19 +315,20 @@ abstract class _MinesWeeperController with Store {
     if (mines.isEmpty)
       generateMines(dimensionLength);
 
-    fields = List.generate(dimensionLength, (index){
-      if (_column >= dimension[0]-1){
-        _line++;
-        _column = 0;
-      }
-      else
-        _column++;
-      
-      final field = FieldModel(posX: _column, posY: _line, hasMine: mines.contains(index)??false); 
+      for (int index=0; index<dimensionLength; index++){
+        if (_column >= dimension[0]-1){
+          _line++;
+          _column = 0;
+        }
+        else
+          _column++;
+        
+        final field = FieldModel(posX: _column, posY: _line, hasMine: mines.contains(index)??false); 
 
-      matrix[[_column, _line].toString()] = field;
-      return field;
-    }).asObservable();
+        matrix[[_column, _line].toString()] = field;
+        await Future.delayed(Duration(milliseconds: 5));
+        fields.add(field);
+      }
 
     _adjacentMines();
   }  

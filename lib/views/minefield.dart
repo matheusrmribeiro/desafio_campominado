@@ -1,7 +1,7 @@
-import 'package:desafio_campominado/model/field_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../controller/minesweeper_controller.dart';
+import 'field/field.dart';
 
 class MineField extends StatelessWidget {
   const MineField({Key key, this.controller}) : super(key: key);
@@ -28,19 +28,18 @@ class MineField extends StatelessWidget {
                   runSpacing: 2,
                   direction: Axis.horizontal,
                   children: controller.fields.map((item){
-                    return SizedBox(
+                    return FieldWidget(
                       height: (minesweeperHeight - 50) / 15,
                       width: (minesweeperWidth - 40) / 10,
-                      child: FieldWidget(item: item, 
-                        onTap: (){ 
-                          if (controller.playing)
-                            controller.onTap(item); 
-                        },
-                        onLongPress: (){
-                          if (controller.playing)
-                            controller.onLongPress(item);
-                        },
-                      ),
+                      item: item, 
+                      onTap: (){ 
+                        if (controller.playing)
+                          controller.onTap(item); 
+                      },
+                      onLongPress: (){
+                        if (controller.playing)
+                          controller.onLongPress(item);
+                      },
                     );
                   }).toList(),
                 );
@@ -75,45 +74,6 @@ class MineField extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-}
-
-class FieldWidget extends StatelessWidget {
-
-  const FieldWidget({Key key, this.item, this.onTap, this.onLongPress}) : super(key: key);
-
-  final FieldModel item;
-  final VoidCallback onTap;
-  final VoidCallback onLongPress;
-
-  @override
-  Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) {
-        return GestureDetector(
-          onTap: onTap,
-          onLongPress: onLongPress,
-          child: Card(
-            margin: EdgeInsets.all(0),
-            color: item.color,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: item.borderColor),
-                color: item.color,
-                  borderRadius: BorderRadius.all(const Radius.circular(5),
-                )
-              ),
-              child: Center(
-                child: Container(
-                    padding: EdgeInsets.all(0),
-                    child: item.icon,
-                ),
-              ),
-            ),
-          ),
-        );
-      }
     );
   }
 }
