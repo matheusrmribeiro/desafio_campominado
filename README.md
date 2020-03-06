@@ -1,6 +1,8 @@
 # Minesweeper
 A logical game
- 
+
+**Obs.: Maybe the function "Watch a friend" do not work well, but improvements will be make**
+
 **What I learned?**
 * MobX pattern
 * Basic Firebase authentication
