@@ -69,7 +69,7 @@ abstract class _MinesWeeperController with Store {
   @action
   Future<void> firebaseLogin() async {
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-    AuthResult request = await _firebaseAuth.signInAnonymously();
+    UserCredential request = await _firebaseAuth.signInAnonymously();
     key = request.user.uid;
   }
 
@@ -243,10 +243,10 @@ abstract class _MinesWeeperController with Store {
   }
 
   void firebaseOnDataListen(DocumentSnapshot document, List<String> tapList, List<String> longPressList){
-    if (_documentIdListening != document.documentID){
-      _documentIdListening = document.documentID;
-      difficulty = Difficulty.values[document.data["difficulty"]];
-      mines = List.castFrom(document.data["mines"]);
+    if (_documentIdListening != document.id){
+      _documentIdListening = document.id;
+      difficulty = Difficulty.values[document.data()["difficulty"]];
+      mines = List.castFrom(document.data()["mines"]);
       tapList.clear();
       longPressList.clear();
       gameOver = false;
@@ -254,8 +254,8 @@ abstract class _MinesWeeperController with Store {
       initialized = true;
     }
 
-    final List<String> onTapLog = List.castFrom(document.data["onTapLog"]??[]);
-    final List<String> onLongPressLog = List.castFrom(document.data["onLongPressLog"]??[]);
+    final List<String> onTapLog = List.castFrom(document.data()["onTapLog"]??[]);
+    final List<String> onLongPressLog = List.castFrom(document.data()["onLongPressLog"]??[]);
     if (onTapLog.length > tapList.length){
       for (var item in onTapLog.where((item) => !tapList.contains(item) )){
         onTap(matrix[item]);
@@ -273,11 +273,11 @@ abstract class _MinesWeeperController with Store {
     if (!playing)
       return;
 
-    Firestore.instance.collection('minesweeper').document(_documentId).setData(
+    FirebaseFirestore.instance.collection('minesweeper').doc(_documentId).set(
       {
         'onTapLog': onTapLog
       },
-      merge: true
+      SetOptions(merge: true)
     );
   }
 
@@ -285,11 +285,11 @@ abstract class _MinesWeeperController with Store {
     if (!playing)
       return;
 
-    Firestore.instance.collection('minesweeper').document(_documentId).setData(
+    FirebaseFirestore.instance.collection('minesweeper').doc(_documentId).set(
       {
         'onLongPressLog': onLongPressLog
       },
-      merge: true
+      SetOptions(merge: true)
     );
   }
 
@@ -299,9 +299,9 @@ abstract class _MinesWeeperController with Store {
 
     final data = (gameOver) ? { 'gameOver': true} : { 'winner': true };
     
-    Firestore.instance.collection('minesweeper').document(_documentId).setData(
+    FirebaseFirestore.instance.collection('minesweeper').doc(_documentId).set(
       data,
-      merge: true
+      SetOptions(merge: true)
     );
   }
 
