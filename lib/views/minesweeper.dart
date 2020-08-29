@@ -26,7 +26,7 @@ class MinesWeeper extends StatelessWidget {
             Observer(
               builder: (_) {
                 return Visibility(
-                  visible: minesweeper.gameOver || minesweeper.winner || !minesweeper.playing,
+                  visible: minesweeper.gameOver || minesweeper.winner,
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -36,12 +36,9 @@ class MinesWeeper extends StatelessWidget {
                       child: RaisedButton(
                         color: Colors.brown[300],
                         onPressed: (){
-                          if (minesweeper.playing)
-                            minesweeper.restart();
-                          else
-                            minesweeper.setPlaying();
+                          minesweeper.restart();
                         },
-                        child: Text((minesweeper.playing) ? "Recomeçar" : "Jogar",
+                        child: Text("Recomeçar",
                           style: TextStyle(
                             color: Colors.white
                           ),                  

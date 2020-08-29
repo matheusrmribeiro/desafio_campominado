@@ -4,14 +4,14 @@ import '../../model/field_model.dart';
 import 'package:flutter/material.dart';
 
 class FieldWidget extends StatefulWidget {
-  const FieldWidget(
-      {Key key,
-      this.height,
-      this.width,
-      this.item,
-      this.onTap,
-      this.onLongPress})
-      : super(key: key);
+  const FieldWidget({
+    Key key,
+    this.height,
+    this.width,
+    this.item,
+    this.onTap,
+    this.onLongPress}
+  ) : super(key: key);
 
   final double height;
   final double width;

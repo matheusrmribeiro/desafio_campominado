@@ -17,11 +17,12 @@ dependencies:
   intl:
   vibration:
   cloud_firestore: ^0.14.0+2
-  firebase_auth: ^0.18.0+1
-  firebase_core: ^0.5.0
   flutter_speed_dial: ^1.2.5
   esys_flutter_share:
   flutter_staggered_grid_view: ^0.3.2
+
+dependency_overrides:
+  analyzer: 0.39.14
 
 dev_dependencies:
   flutter_test:

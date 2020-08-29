@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:vibration/vibration.dart';
 
@@ -19,7 +18,6 @@ enum Difficulty { easy, medium, hard }
 abstract class _MinesWeeperController with Store {
 
   _MinesWeeperController({this.difficulty}){
-    firebaseLogin();
     initializeGame();
     dimension = _getDimension();
   }
@@ -29,9 +27,6 @@ abstract class _MinesWeeperController with Store {
 
   @observable
   Difficulty difficulty;
-
-  @observable
-  bool playing = true;
 
   @observable
   ObservableList<FieldModel> fields = <FieldModel>[].asObservable();
@@ -51,12 +46,8 @@ abstract class _MinesWeeperController with Store {
   @observable
   String key = "";
 
-  String _documentId = "";
   List<String> onTapLog = [];
   List<String> onLongPressLog = [];
-  String _documentIdListening = "";
-  StreamSubscription<QuerySnapshot> subscription;
-
   Timer _timer;
 
   Map<String, FieldModel> matrix = {};
@@ -67,21 +58,13 @@ abstract class _MinesWeeperController with Store {
   }
 
   @action
-  Future<void> firebaseLogin() async {
-    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-    UserCredential request = await _firebaseAuth.signInAnonymously();
-    key = request.user.uid;
-  }
-
-  @action
   void restart(){
     gameOver = false;
     initialized = false;
     matrix = {};
     if (fields.isNotEmpty)
       fields.clear();
-    if (mines.isNotEmpty)
-      mines = [];
+    mines = [];
     _timer = null;
     minute = 0;
     hour = 0;
@@ -90,32 +73,21 @@ abstract class _MinesWeeperController with Store {
 
   @action
   Future<void> onTap(FieldModel field) async {
-    if (!initialized){
+    if (!initialized)
       initialized = true;
-      firebaseInitializeGame();
-    }
 
-    if ((gameOver) || (winner) || (field.hasFlag))
-      return;
-
-    if (playing){
+    if ((!gameOver) || (!winner) || (!field.hasFlag)) {
       onTapLog.add([field.posX, field.posY].toString());
-      firebaseOnTap();
+
+      if (field.hasMine) {
+        gameOver = true;
+        await uncoverMines(field);
+      } else {
+        uncoverAdjacentFields(field: field, 
+          visited: {[field.posX, field.posY].toString(): false}, 
+          clicked: true);
+      }
     }
-
-    if (field.hasMine){
-      gameOver = true;
-
-      firebaseFinalizeGame(gameOver: true);
-
-      await uncoverMines(field);
-
-      return;
-    }
-
-    uncoverAdjacentFields(field: field, 
-      visited: {[field.posX, field.posY].toString(): false}, 
-      clicked: true);
   }
 
   @action
@@ -123,42 +95,12 @@ abstract class _MinesWeeperController with Store {
     if (!initialized)
       initialized = true;
 
-    if ((gameOver) || (winner))
-      return;
-
-    if (field.isCovered){
-      field.hasFlag=!field.hasFlag;
-      if (playing){
+    if ((!gameOver) || (!winner)) {
+      if (field.isCovered) {
+        field.hasFlag=!field.hasFlag;
         onLongPressLog.add([field.posX, field.posY].toString());
-        firebaseOnLongPress();
       }
     }
-  }
-
-  @action
-  void setPlaying(){
-    playing = true;
-    subscription.cancel();
-    restart();
-  }
-
-  @action
-  void setWatching(String userKey){
-    playing = false;
-    
-    List<String> longPressList = [];
-    List<String> tapList = [];
-
-    if (subscription != null)
-      subscription.cancel();
-
-    subscription = Firestore.instance.collection('minesweeper')
-      .where("id", isEqualTo: userKey)
-      .orderBy("date", descending: true)
-      .limit(1).snapshots().listen((data){
-        firebaseOnDataListen(data.documents.last, tapList, longPressList);
-      });
-
   }
 
   @computed
@@ -178,25 +120,20 @@ abstract class _MinesWeeperController with Store {
   get flaggedMines => totalMines - fields.where((item) => item.hasFlag).length;
 
   @computed
-  bool get winner{
+  bool get winner {
     bool isWinner = true;
-    if (flaggedMines == 0){
-      fields.where((item) => item.hasFlag).forEach((item){
+    if (flaggedMines == 0) {
+      fields.where((item) => item.hasFlag).forEach((item) {
         if (!item.hasMine){
           isWinner = false;
           return;
         }
-          
       });
-    }
-    else
+    } else
       isWinner = false;
 
     if (fields.where((item) => item.isCovered && !item.hasMine).length > 0)
       isWinner = false;
-
-    if (isWinner)
-      firebaseFinalizeGame(gameOver: false);
 
     return isWinner;
   }
@@ -225,89 +162,9 @@ abstract class _MinesWeeperController with Store {
     return "${formatter.format(hour)}:${formatter.format(minute)}";
   }
 
-  void firebaseInitializeGame(){
-    if (!playing)
-      return;
-      
-    _documentId =  Firestore.instance.collection('minesweeper').document().documentID;
-    Firestore.instance.collection('minesweeper').document(_documentId).setData(
-      {
-        'id': key,
-        'date': Timestamp.now(),
-        'difficulty': difficulty.index,
-        'mines': mines,
-        'winner': false,
-        'gameOver': false
-      }
-    );
-  }
-
-  void firebaseOnDataListen(DocumentSnapshot document, List<String> tapList, List<String> longPressList){
-    if (_documentIdListening != document.id){
-      _documentIdListening = document.id;
-      difficulty = Difficulty.values[document.data()["difficulty"]];
-      mines = List.castFrom(document.data()["mines"]);
-      tapList.clear();
-      longPressList.clear();
-      gameOver = false;
-      initializeGame();
-      initialized = true;
-    }
-
-    final List<String> onTapLog = List.castFrom(document.data()["onTapLog"]??[]);
-    final List<String> onLongPressLog = List.castFrom(document.data()["onLongPressLog"]??[]);
-    if (onTapLog.length > tapList.length){
-      for (var item in onTapLog.where((item) => !tapList.contains(item) )){
-        onTap(matrix[item]);
-      }
-    }
-
-    if (onLongPressLog.length > tapList.length){
-      for (var item in onLongPressLog.where((item) => !tapList.contains(item) )){
-        onLongPress(matrix[item]);
-      }
-    }  
-  }
-
-  void firebaseOnTap(){
-    if (!playing)
-      return;
-
-    FirebaseFirestore.instance.collection('minesweeper').doc(_documentId).set(
-      {
-        'onTapLog': onTapLog
-      },
-      SetOptions(merge: true)
-    );
-  }
-
-  void firebaseOnLongPress(){
-    if (!playing)
-      return;
-
-    FirebaseFirestore.instance.collection('minesweeper').doc(_documentId).set(
-      {
-        'onLongPressLog': onLongPressLog
-      },
-      SetOptions(merge: true)
-    );
-  }
-
-  void firebaseFinalizeGame({ bool gameOver = false }){
-    if (!playing)
-      return;
-
-    final data = (gameOver) ? { 'gameOver': true} : { 'winner': true };
-    
-    FirebaseFirestore.instance.collection('minesweeper').doc(_documentId).set(
-      data,
-      SetOptions(merge: true)
-    );
-  }
-
   void buildFields() async {
     final dimension = _getDimension();
-    final dimensionLength = dimension[0]*dimension[1];
+    final dimensionLength = dimension[0] * dimension[1];
     
     int _line = 0;
     int _column = -1;
@@ -315,18 +172,22 @@ abstract class _MinesWeeperController with Store {
     if (mines.isEmpty)
       generateMines(dimensionLength);
 
-      for (int index=0; index<dimensionLength; index++){
-        if (_column >= dimension[0]-1){
+      for (int index=0; index < dimensionLength; index++) {
+        if (_column >= (dimension[0] - 1)){
           _line++;
           _column = 0;
-        }
-        else
+        } else
           _column++;
         
-        final field = FieldModel(posX: _column, posY: _line, hasMine: mines.contains(index)??false); 
+        final field = FieldModel(
+          posX: _column, 
+          posY: _line, 
+          hasMine: mines.contains(index) ?? false
+        ); 
 
         matrix[[_column, _line].toString()] = field;
         await Future.delayed(Duration(milliseconds: 5));
+
         fields.add(field);
       }
 
@@ -339,7 +200,8 @@ abstract class _MinesWeeperController with Store {
       int mine = tryMine.nextInt(dimensionLength);
 
       if (!mines.contains(mine))
-        mines.add(tryMine.nextInt(dimensionLength));
+        mines.add(mine);
+      
       generateMines(dimensionLength);
     }
   }
@@ -353,16 +215,17 @@ abstract class _MinesWeeperController with Store {
     }
   }
 
-  bool _mineAt(int x, int y){
-    FieldModel field = matrix[[x, y].toString()];
 
-    if (field == null)
-      return false;
-    else
-      return field.hasMine;
-  }
+  void _adjacentMines() {
+    bool _mineAt(int x, int y){
+      FieldModel field = matrix[[x, y].toString()];
 
-  void _adjacentMines(){
+      if (field == null)
+        return false;
+      else
+        return field.hasMine;
+    }
+
     fields.forEach((field){
       int count = 0;
       int x = field.posX;
@@ -394,54 +257,50 @@ abstract class _MinesWeeperController with Store {
 
       firstField.isCovered = false;
 
-      if (Vibration.hasVibrator() != null) {
+      if (Vibration.hasVibrator() != null)
         Vibration.vibrate(duration: 100);
-      }
       
       await Future.delayed(Duration(milliseconds: 150));
 
       for (FieldModel item in fieldsWithMines) {
         item.isCovered = false;
-        if (Vibration.hasVibrator() != null) {
+
+        if (Vibration.hasVibrator() != null)
           Vibration.vibrate(duration: 100);
-        }
+
         await Future.delayed(Duration(milliseconds: 150));
       }
   }
 
   void uncoverAdjacentFields({@required FieldModel field, Map<String, bool> visited, bool clicked = false}){
-    if (field == null)
-      return;
+    if (field == null) {
+      int x = field.posX;
+      int y = field.posY;
 
-    int x = field.posX;
-    int y = field.posY;
+      if ((x >= 0) && (y >= 0 ) && (x < dimension[0]) && (y < dimension[1])) {
+        if (!visited[[x, y].toString()] ?? false) { // Not yet visited
+          visited[[x,y].toString()] = true;
+          
+          if (!field.hasMine) { // Has no mine
+            if (clicked)
+              field.isCovered = false;
+            else if (field.hasFlag)
+              return;
+            else if (field.minesAround == 0)
+              field.isCovered = false;
+            else if (field.minesAround > 0) {
+              field.isCovered = false;
+              return;
+            } else
+              return;
 
-    if ((x >= 0) && (y >= 0 ) && (x < dimension[0]) && (y < dimension[1])){
-      if (visited[[x, y].toString()]??false)
-        return;
-      else
-        visited[[x,y].toString()]=true;
-      
-      if (field.hasMine)
-        return;
-
-      if (clicked)
-        field.isCovered = false;
-      else if (field.hasFlag)
-        return;
-      else if (field.minesAround == 0)
-        field.isCovered = false;
-      else if (field.minesAround > 0){
-        field.isCovered = false;
-        return;
+            uncoverAdjacentFields(field: matrix[[x-1, y].toString()], visited: visited);
+            uncoverAdjacentFields(field: matrix[[x+1, y].toString()], visited: visited);
+            uncoverAdjacentFields(field: matrix[[x, y-1].toString()], visited: visited);
+            uncoverAdjacentFields(field: matrix[[x, y+1].toString()], visited: visited);
+          }
+        }
       }
-      else
-        return;
-
-      uncoverAdjacentFields(field: matrix[[x-1, y].toString()], visited: visited);
-      uncoverAdjacentFields(field: matrix[[x+1, y].toString()], visited: visited);
-      uncoverAdjacentFields(field: matrix[[x, y-1].toString()], visited: visited);
-      uncoverAdjacentFields(field: matrix[[x, y+1].toString()], visited: visited);
     }
   }
 

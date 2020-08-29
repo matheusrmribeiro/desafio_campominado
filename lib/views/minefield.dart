@@ -33,12 +33,10 @@ class MineField extends StatelessWidget {
                       width: (minesweeperWidth - 40) / 10,
                       item: item, 
                       onTap: (){ 
-                        if (controller.playing)
-                          controller.onTap(item); 
+                        controller.onTap(item); 
                       },
                       onLongPress: (){
-                        if (controller.playing)
-                          controller.onLongPress(item);
+                        controller.onLongPress(item);
                       },
                     );
                   }).toList(),
@@ -53,7 +51,7 @@ class MineField extends StatelessWidget {
               children: <Widget>[
                 Observer(
                   builder: (_) {
-                    return Text((controller.playing) ? "Jogando" : "Assistindo",
+                    return Text("Jogando",
                       style: TextStyle(
                         color: Colors.brown[200]
                       ),

@@ -60,13 +60,6 @@ class FloatingActions extends StatelessWidget {
                       child: Text("Cancelar"),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
-                    MaterialButton(
-                      child: Text("Assistir"),
-                      onPressed: () { 
-                        controller.setWatching(textController.text);
-                        Navigator.of(context).pop();
-                        } 
-                    )
                   ],
                 );
               }

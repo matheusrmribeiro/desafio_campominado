@@ -9,12 +9,13 @@ class FieldModel = _FieldModel with _$FieldModel;
 abstract class _FieldModel with Store {
   
   _FieldModel({
-  this.posX, 
-  this.posY, 
-  this.isCovered = true, 
-  this.hasMine = false, 
-  this.hasFlag = false, 
-  this.minesAround = 0});
+    this.posX, 
+    this.posY, 
+    this.isCovered = true, 
+    this.hasMine = false, 
+    this.hasFlag = false, 
+    this.minesAround = 0
+  });
 
   final int posX;
   final int posY;
@@ -32,22 +33,20 @@ abstract class _FieldModel with Store {
   int minesAround = 0;
 
   @computed
-  String get minesAroundDescription {
-    if ((isCovered) || (minesAround == 0)) 
-      return "";
-    
-    return minesAround.toString();
-  } 
+  String get minesAroundDescription => ((isCovered) || (minesAround == 0)) 
+    ? "" 
+    : minesAround.toString();
 
   @computed
-  get color{
-    if (isCovered) 
-      return Colors.brown[200];
+  get color {
+    MaterialColor currentColor = Colors.white;
 
-    if (hasMine)
-      return Colors.red;
-    else
-      return Colors.white;
+    if (isCovered) 
+      currentColor = Colors.brown[200];
+    else if (hasMine)
+      currentColor = Colors.red;
+    
+    return currentColor;
   }
 
   @computed
@@ -62,28 +61,31 @@ abstract class _FieldModel with Store {
   }
 
   @computed
-  get borderColor{
-    if (!isCovered)
-      return hintColor;
-    
-    if (hasFlag)
-      return Colors.red;
+  get borderColor {
+    MaterialColor currentColor = Colors.grey;
 
-    return Colors.grey;
+    if (!isCovered)
+      currentColor = hintColor;
+    else if (hasFlag)
+      currentColor = Colors.red;
+
+    return currentColor;
   }
 
   @computed
-  Widget get icon{
-    if ((hasMine) && (!isCovered))
-      return Icon(Feather.cpu, color: Colors.black);
-    if (hasFlag)
-      return Icon(Ionicons.md_flag, color: Colors.red);
-
-    return Text(minesAroundDescription,
+  Widget get icon {
+    Widget currentWidget = Text(minesAroundDescription,
       style: TextStyle(
         color: hintColor
       ),
     );
+
+    if ((hasMine) && (!isCovered))
+      currentWidget = Icon(Feather.cpu, color: Colors.black);
+    else if (hasFlag)
+      currentWidget = Icon(Ionicons.md_flag, color: Colors.red);
+
+    return currentWidget;
   }
 
 }
