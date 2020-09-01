@@ -39,7 +39,7 @@ abstract class _FieldModel with Store {
 
   @computed
   get color {
-    MaterialColor currentColor = Colors.white;
+    Color currentColor = Colors.white;
 
     if (isCovered) 
       currentColor = Colors.brown[200];
@@ -62,7 +62,7 @@ abstract class _FieldModel with Store {
 
   @computed
   get borderColor {
-    MaterialColor currentColor = Colors.grey;
+    Color currentColor = Colors.grey;
 
     if (!isCovered)
       currentColor = hintColor;

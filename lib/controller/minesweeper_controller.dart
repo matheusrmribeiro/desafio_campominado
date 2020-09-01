@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:vibration/vibration.dart';
-
 import '../model/field_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +44,6 @@ abstract class _MinesWeeperController with Store {
   @observable
   String key = "";
 
-  List<String> onTapLog = [];
-  List<String> onLongPressLog = [];
   Timer _timer;
 
   Map<String, FieldModel> matrix = {};
@@ -76,9 +72,7 @@ abstract class _MinesWeeperController with Store {
     if (!initialized)
       initialized = true;
 
-    if ((!gameOver) || (!winner) || (!field.hasFlag)) {
-      onTapLog.add([field.posX, field.posY].toString());
-
+    if ((!gameOver) && (!winner) && (!field.hasFlag)) {
       if (field.hasMine) {
         gameOver = true;
         await uncoverMines(field);
@@ -96,10 +90,8 @@ abstract class _MinesWeeperController with Store {
       initialized = true;
 
     if ((!gameOver) || (!winner)) {
-      if (field.isCovered) {
+      if (field.isCovered)
         field.hasFlag=!field.hasFlag;
-        onLongPressLog.add([field.posX, field.posY].toString());
-      }
     }
   }
 
@@ -139,7 +131,7 @@ abstract class _MinesWeeperController with Store {
   }
 
   @computed
-  String get time{
+  String get time {
     if ((initialized) && (_timer == null)){
       final oneSec = const Duration(seconds: 1);
       _timer = Timer.periodic(oneSec,
@@ -172,6 +164,7 @@ abstract class _MinesWeeperController with Store {
     if (mines.isEmpty)
       generateMines(dimensionLength);
 
+      List<FieldModel> _fields = [];
       for (int index=0; index < dimensionLength; index++) {
         if (_column >= (dimension[0] - 1)){
           _line++;
@@ -186,10 +179,11 @@ abstract class _MinesWeeperController with Store {
         ); 
 
         matrix[[_column, _line].toString()] = field;
-        await Future.delayed(Duration(milliseconds: 5));
+        // await Future.delayed(Duration(milliseconds: 5));
 
-        fields.add(field);
+        _fields.add(field);
       }
+      fields.addAll(_fields);
 
     _adjacentMines();
   }  
@@ -273,26 +267,17 @@ abstract class _MinesWeeperController with Store {
   }
 
   void uncoverAdjacentFields({@required FieldModel field, Map<String, bool> visited, bool clicked = false}){
-    if (field == null) {
+    if (field != null) {
       int x = field.posX;
       int y = field.posY;
 
       if ((x >= 0) && (y >= 0 ) && (x < dimension[0]) && (y < dimension[1])) {
-        if (!visited[[x, y].toString()] ?? false) { // Not yet visited
+        if (!(visited[[x, y].toString()] ?? false)) { // Not yet visited
           visited[[x,y].toString()] = true;
           
-          if (!field.hasMine) { // Has no mine
-            if (clicked)
+          if ((!field.hasMine) && (!field.hasFlag)) {
+            if ((clicked) || (field.minesAround == 0) || (field.minesAround > 0))
               field.isCovered = false;
-            else if (field.hasFlag)
-              return;
-            else if (field.minesAround == 0)
-              field.isCovered = false;
-            else if (field.minesAround > 0) {
-              field.isCovered = false;
-              return;
-            } else
-              return;
 
             uncoverAdjacentFields(field: matrix[[x-1, y].toString()], visited: visited);
             uncoverAdjacentFields(field: matrix[[x+1, y].toString()], visited: visited);
