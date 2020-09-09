@@ -16,38 +16,45 @@ class MinesWeeper extends StatelessWidget {
       body: Container(
         child: Stack(
           children: <Widget>[
-            Container(
-              child: SettingsBoard(minesweeper: minesweeper),
+            Column(
+              children: [
+                Container(
+                  child: SettingsBoard(minesweeper: minesweeper),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: MineField(controller: minesweeper)
+                ),
+              ],
             ),
             Align(
-              alignment: Alignment.center,
-              child: MineField(controller: minesweeper)
-            ),
-            Observer(
-              builder: (_) {
-                return Visibility(
-                  visible: minesweeper.gameOver || minesweeper.winner,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 15),
-                      width: 110,
-                      height: 52,
-                      child: RaisedButton(
-                        color: Colors.brown[300],
-                        onPressed: (){
-                          minesweeper.restart();
-                        },
-                        child: Text("Recomeçar",
-                          style: TextStyle(
-                            color: Colors.white
-                          ),                  
+              alignment: Alignment.bottomCenter,
+              child: Observer(
+                builder: (_) {
+                  return Visibility(
+                    visible: minesweeper.gameOver || minesweeper.winner,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 15),
+                        width: 110,
+                        height: 52,
+                        child: RaisedButton(
+                          color: Colors.brown[300],
+                          onPressed: (){
+                            minesweeper.restart();
+                          },
+                          child: Text("Recomeçar",
+                            style: TextStyle(
+                              color: Colors.white
+                            ),                  
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              }
+                  );
+                }
+              ),
             ),
             Align(
               alignment: Alignment.center,

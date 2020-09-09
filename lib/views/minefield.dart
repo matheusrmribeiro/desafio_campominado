@@ -10,7 +10,7 @@ class MineField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final minesweeperHeight = MediaQuery.of(context).size.height*0.6;
+    final minesweeperHeight = MediaQuery.of(context).size.height*0.8;
     final minesweeperWidth = MediaQuery.of(context).size.width*0.9;
     
     return Container(
@@ -49,14 +49,10 @@ class MineField extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Observer(
-                  builder: (_) {
-                    return Text("Jogando",
-                      style: TextStyle(
-                        color: Colors.brown[200]
-                      ),
-                    );
-                  }
+                Text("Jogando",
+                  style: TextStyle(
+                    color: Colors.brown[200]
+                  ),
                 ),
                 Observer(
                   builder: (_) {
