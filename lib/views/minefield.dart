@@ -45,25 +45,16 @@ class MineField extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text("Jogando",
-                  style: TextStyle(
-                    color: Colors.brown[200]
-                  ),
-                ),
-                Observer(
-                  builder: (_) {
-                    return Text(controller.time,
-                      style: TextStyle(
-                        color: Colors.brown[200]
-                      )
-                    );
-                  }
-                ),
-              ],
+            child: Center(
+              child: Observer(
+                builder: (_) {
+                  return Text(controller.time,
+                    style: TextStyle(
+                      color: Colors.brown[200]
+                    )
+                  );
+                }
+              ),
             ),
           )
         ],

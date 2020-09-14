@@ -278,14 +278,12 @@ abstract class _MinesWeeperController with Store {
           if ((!field.hasMine) && (!field.hasFlag)) {
             bool uncoverAdjacents = false;
 
-            if (clicked) {
               field.isCovered = false;
+
+            if (clicked)
+              uncoverAdjacents = !(field.minesAround > 0);
+            else if (field.minesAround == 0)
               uncoverAdjacents = true;
-            } else if (field.minesAround == 0) {
-              field.isCovered = false;
-              uncoverAdjacents = true;
-            } else
-              field.isCovered = false;
 
             if (uncoverAdjacents) {
               uncoverAdjacentFields(field: matrix[[x-1, y].toString()], visited: visited);
