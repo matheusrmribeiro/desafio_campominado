@@ -1,7 +1,7 @@
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-import '../../model/field_model.dart';
 import 'package:flutter/material.dart';
+import 'package:desafio_campominado/src/domain/model/field_model.dart';
 
 class FieldWidget extends StatefulWidget {
   const FieldWidget({

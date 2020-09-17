@@ -1,95 +1,7 @@
+import 'package:desafio_campominado/src/app/controller/minesweeper_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-
-import '../views/minefield.dart';
-import '../controller/minesweeper_controller.dart';
-import '../views/floatingActions.dart';
-
-
-class MinesWeeper extends StatelessWidget {
-  final MinesWeeperController minesweeper = MinesWeeperController(difficulty: Difficulty.easy);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        child: Stack(
-          children: <Widget>[
-            Column(
-              children: [
-                Container(
-                  child: SettingsBoard(minesweeper: minesweeper),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: MineField(controller: minesweeper)
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Observer(
-                builder: (_) {
-                  return Visibility(
-                    visible: minesweeper.gameOver || minesweeper.winner,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 15),
-                        width: 110,
-                        height: 52,
-                        child: RaisedButton(
-                          color: Colors.brown[300],
-                          onPressed: (){
-                            minesweeper.restart();
-                          },
-                          child: Text("Recomeçar",
-                            style: TextStyle(
-                              color: Colors.white
-                            ),                  
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }
-              ),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Observer(
-                builder: (_) {
-                  return Visibility(
-                    visible: minesweeper.winner,
-                    child: Container(
-                      height: 50,
-                      width: 250,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(120),
-                        border: Border.all(color: Colors.brown, width: 1.5),
-                        color: Colors.brown
-                      ),
-                      child: Center(
-                        child: Text("Você venceu!",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }
-              ),
-            )
-          ],
-        ),
-      ),
-      // floatingActionButton: FloatingActions()
-    );
-  }
-}
+import 'info_board.dart';
 
 class SettingsBoard extends StatelessWidget {
 
@@ -199,40 +111,6 @@ class SettingsBoard extends StatelessWidget {
                 ),
               ],
             )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class InfoBoard extends StatelessWidget {
-
-  const InfoBoard({Key key, this.child, this.title}) : super(key: key);
-
-  final Widget child;
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      child: Card(
-        shape: Border.all(color: Colors.brown),
-        child: Column(
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(5),
-              color: Colors.brown[300],
-              child: Text(title,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            child
           ],
         ),
       ),

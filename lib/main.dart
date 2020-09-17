@@ -1,4 +1,6 @@
-import 'views/minesweeper.dart';
+import 'package:desafio_campominado/src/app/theme/appTheme.dart';
+
+import 'src/app/pages/minesweeper/minesweeper.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -7,19 +9,13 @@ void main() {
 
 class MyApp extends StatelessWidget {
   
-  final ThemeData theme = ThemeData(
-    primaryColor: Colors.brown,
-    accentColor: Colors.brown[300],
-    buttonColor: Colors.orange
-  );
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Campo minado",
       home: MinesWeeper(),
-      theme: theme,
+      theme: AppTheme.getTheme(),
     );
   }
 }

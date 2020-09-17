@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:vibration/vibration.dart';
-import '../model/field_model.dart';
+import 'package:desafio_campominado/src/domain/model/field_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';

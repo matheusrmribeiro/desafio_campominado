@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import '../controller/minesweeper_controller.dart';
-import 'field/field.dart';
+import '../../../controller/minesweeper_controller.dart';
+import 'field.dart';
 
 class MineField extends StatelessWidget {
   const MineField({Key key, this.controller}) : super(key: key);

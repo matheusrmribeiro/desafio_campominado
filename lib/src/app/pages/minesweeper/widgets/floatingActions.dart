@@ -1,7 +1,7 @@
+import 'package:desafio_campominado/src/app/controller/minesweeper_controller.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import '../controller/minesweeper_controller.dart';
 
 class FloatingActions extends StatelessWidget {
   FloatingActions({Key key, this.controller}) : super(key: key);
