@@ -1,4 +1,4 @@
-import 'package:desafio_campominado/src/app/theme/appTheme.dart';
+import 'package:desafio_campominado/src/app/theme/app_theme.dart';
 
 import 'src/app/pages/minesweeper/minesweeper.dart';
 import 'package:flutter/material.dart';

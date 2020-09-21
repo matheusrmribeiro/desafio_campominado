@@ -16,6 +16,13 @@ class MinesWeeper extends StatelessWidget {
           children: <Widget>[
             Container(
               height: 150,
+              child: ClipPath(
+                clipper: WavePathClass(),
+                child: Container(color: Colors.red,),
+              ),
+            ),
+            Container(
+              height: 150,
               child: SettingsBoard(minesweeper: minesweeper),
             ),
             Align(
@@ -42,7 +49,7 @@ class MinesWeeper extends StatelessWidget {
                           child: Text("Recomeçar",
                             style: TextStyle(
                               color: Colors.white
-                            ),                  
+                            ),
                           ),
                         ),
                       ),
@@ -83,4 +90,36 @@ class MinesWeeper extends StatelessWidget {
       ),
     );
   }
+}
+
+class WavePathClass extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path =  Path();
+
+    path.lineTo(0, size.height);
+
+    path.quadraticBezierTo(
+      size.width * 0.50, 
+      size.height * 0.3, 
+      size.width * 0.5, 
+      size.height * 0.8
+    );
+
+    // path.quadraticBezierTo(
+    //   size.width * 0.8, 
+    //   size.height * 0.9, 
+    //   size.width, 
+    //   size.height * 0.6
+    // );
+
+    path.lineTo(size.width, 0);
+    path.close();
+
+    return path;
+  }
+  
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+
 }
