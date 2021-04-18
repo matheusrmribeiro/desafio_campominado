@@ -1,13 +1,11 @@
 # Minesweeper
-A logical game
+A flutter game
 
-**Obs.: Maybe the function "Watch a friend" do not work well, but improvements will be make**
-
-**What I learned?**
+**What I've learned?**
 * MobX pattern
 * Basic Firebase authentication
 * Animations
-* Mxtrix
+* Matrix
 
 **Tested on**
 - [X] Android
@@ -26,7 +24,7 @@ A logical game
 1. Download the .JSON file that firebase provided.
 1. Put the .JSON file inside the folder ([android\app](https://github.com/matheusrmribeiro/desafio_campominado/tree/master/android/app))
 
-## Screens
+## Screenshots
 
-<img src="prints/Print4.jpeg?raw=true" width="49.5%"/> <img src="prints/Print2.jpeg?raw=true" width="49.5%" /> 
-<img src="prints/Print5.jpeg?raw=true" width="49.5%" /> <img src="prints/Print1.jpeg?raw=true" width="49.5%" />
+<img src="prints/Print4.jpeg?raw=true" width="24%" /> <img src="prints/Print2.jpeg?raw=true" width="24%" /> 
+<img src="prints/Print5.jpeg?raw=true" width="24%" /> <img src="prints/Print1.jpeg?raw=true" width="24%" />
